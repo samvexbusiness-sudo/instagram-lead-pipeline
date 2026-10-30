@@ -1,0 +1,17 @@
+# One search term per line. Lines starting with # are ignored.
+# Instagram search only returns a limited number of accounts per term,
+# so many narrow terms beat a few broad ones. Rotate/extend these.
+business coach
+online business coach
+business mentor
+coach for coaches
+sales coach
+marketing coach
+scale your coaching business
+high ticket coach
+mindset business coach
+agency coach
+consultant coach
+leadership coach
+executive coach
+female entrepreneur coach

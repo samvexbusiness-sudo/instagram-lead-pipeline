@@ -1,0 +1,1215 @@
+{
+ "_note": "Synthetic, made-up profiles for the offline demo and tests. Not real accounts.",
+ "reference_date": "2026-10-30T00:00:00+00:00",
+ "items": [
+  {
+   "username": "demo.coach.alpha",
+   "id": "6285816303",
+   "fullName": "Alpha Demo (FAKE)",
+   "biography": "Business coach for coaches | Scale to $20k/mo | DM 'SCALE' | hello@demo-coach-alpha.invalid",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 14200,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.coach.alpha/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.coach.alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.alpha"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": [
+    {
+     "username": "demo.related.one"
+    },
+    {
+     "username": "demo.related.two"
+    }
+   ]
+  },
+  {
+   "username": "demo.coach.bravo",
+   "id": "4661099107",
+   "fullName": "Bravo Demo (FAKE)",
+   "biography": "Helping consultants sign high-ticket clients. Free training below",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 8300,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://linktr.ee/demo.coach.bravo",
+   "externalUrls": [
+    {
+     "url": "https://linktr.ee/demo.coach.bravo"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.coach.bravo/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.coach.bravo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.bravo"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.fitness.charlie",
+   "id": "4936884432",
+   "fullName": "Charlie Demo (FAKE)",
+   "biography": "Online fitness coach & personal trainer",
+   "businessCategoryName": "Fitness Trainer",
+   "followersCount": 22000,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.fitness.charlie/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.fitness.charlie: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.fitness.charlie"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.private.delta",
+   "id": "2353841053",
+   "fullName": "Delta Demo (FAKE)",
+   "biography": "Business mentor",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 9000,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": true,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.private.delta/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.private.delta: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.private.delta"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.tiny.echo",
+   "id": "2368206880",
+   "fullName": "Echo Demo (FAKE)",
+   "biography": "New business coach!",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 450,
+   "followsCount": 600,
+   "postsCount": 12,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.tiny.echo/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.tiny.echo: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.tiny.echo"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.mega.foxtrot",
+   "id": "2441771910",
+   "fullName": "Foxtrot Demo (FAKE)",
+   "biography": "Entrepreneur. Founder. Coach.",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 1200000,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.mega.foxtrot/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.mega.foxtrot: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.mega.foxtrot"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.quiet.golf",
+   "id": "8020083168",
+   "fullName": "Golf Demo (FAKE)",
+   "biography": "Sales coach for agency owners",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 6100,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.quiet.golf/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-07-02T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-06-29T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-06-26T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-06-23T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-06-20T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-06-17T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-06-14T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-06-11T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.quiet.golf: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.quiet.golf"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "demo.coach.hotel",
+   "id": "9183192633",
+   "fullName": "Hotel Demo (FAKE)",
+   "biography": "Mindset + business coach for female founders. Podcast host",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 31000,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://hotel-demo-coaching.invalid",
+   "externalUrls": [
+    {
+     "url": "https://hotel-demo-coaching.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.coach.hotel/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.coach.hotel: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.coach.hotel"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": [],
+   "businessEmail": "team@hotel-demo-coaching.invalid",
+   "businessPhoneNumber": "+10000000000"
+  },
+  {
+   "username": "demo.consult.india",
+   "id": "870455939",
+   "fullName": "India Demo (FAKE)",
+   "biography": "Marketing consultant | clients in SaaS",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 5400,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://india-demo.invalid",
+   "externalUrls": [
+    {
+     "url": "https://india-demo.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/demo.consult.india/",
+   "latestPosts": [
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for demo.consult.india: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": null,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "demo.consult.india"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  },
+  {
+   "username": "Demo.Coach.Alpha",
+   "id": "4408925750",
+   "fullName": "Alpha Demo duplicate (FAKE)",
+   "biography": "Business coach for coaches | Scale to $20k/mo | DM 'SCALE' | hello@demo-coach-alpha.invalid",
+   "businessCategoryName": "Business Coach",
+   "followersCount": 14200,
+   "followsCount": 600,
+   "postsCount": 180,
+   "private": false,
+   "verified": false,
+   "isBusinessAccount": true,
+   "externalUrl": "https://demo-coach-site.invalid",
+   "externalUrls": [
+    {
+     "url": "https://demo-coach-site.invalid"
+    }
+   ],
+   "url": "https://www.instagram.com/Demo.Coach.Alpha/",
+   "latestPosts": [
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-28T00:00:00.000Z",
+     "caption": "Sample caption 0 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO0/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-25T00:00:00.000Z",
+     "caption": "Sample caption 1 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO1/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-22T00:00:00.000Z",
+     "caption": "Sample caption 2 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO2/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-19T00:00:00.000Z",
+     "caption": "Sample caption 3 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO3/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-16T00:00:00.000Z",
+     "caption": "Sample caption 4 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO4/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Image",
+     "productType": "feed",
+     "timestamp": "2026-10-13T00:00:00.000Z",
+     "caption": "Sample caption 5 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO5/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-10T00:00:00.000Z",
+     "caption": "Sample caption 6 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO6/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    },
+    {
+     "type": "Video",
+     "productType": "clips",
+     "timestamp": "2026-10-07T00:00:00.000Z",
+     "caption": "Sample caption 7 for Demo.Coach.Alpha: 3 mistakes stopping you from scaling your offer",
+     "likesCount": 180,
+     "commentsCount": 12,
+     "videoViewCount": 2160,
+     "url": "https://www.instagram.com/p/FAKEDEMO7/",
+     "displayUrl": "https://example.invalid/thumb.jpg",
+     "ownerUsername": "Demo.Coach.Alpha"
+    }
+   ],
+   "searchTerm": "business coach",
+   "relatedProfiles": []
+  }
+ ]
+}

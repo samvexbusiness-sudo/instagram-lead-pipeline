@@ -1,0 +1,52 @@
+# Main settings. Edit freely. Money limits live in [budget].
+# Nothing paid runs unless you pass --approve-spend on the command line.
+
+[pipeline]
+daily_qualified_target = 20
+# Skip a handle we already looked at within this many days (saves paying twice).
+recheck_after_days = 90
+
+[budget]
+# Hard caps in USD. The pipeline refuses to start a paid step that could exceed them.
+apify_per_run_usd   = 2.00
+apify_daily_usd     = 1.50
+apify_monthly_usd   = 35.00
+claude_per_run_usd  = 3.00
+claude_daily_usd    = 3.00
+claude_monthly_usd  = 75.00
+# Hunter is counted in credits, not dollars. Free plan = 50 credits/month.
+hunter_monthly_credits = 45
+
+[apify]
+# Keyword discovery. Official Apify Actor. Returns full profile data per user.
+discovery_actor = "apify/instagram-search-scraper"
+discovery_price_per_result = 0.0027      # FREE-tier price, Oct 2026
+# Username enrichment / lookalike "snowball" from relatedProfiles.
+profile_actor = "apify/instagram-profile-scraper"
+profile_price_per_result = 0.0026
+# Optional paid email fallback. Off unless you pass --apify-contacts.
+contact_actor = "memo23/instagram-email-phone-scraper"
+contact_price_per_profile = 0.002
+contact_price_per_contact = 0.005
+# How long to wait for one Actor run before giving up (seconds).
+run_timeout_seconds = 900
+
+[claude]
+# "api" = call the Claude API (needs ANTHROPIC_API_KEY, billed per token).
+# "manual" = write a batch file you paste into claude.ai chat, then import the answer. $0 extra.
+mode = "manual"
+model = "claude-opus-5-5"
+# Cheaper option: "claude-haiku-5-5" (about 95% cheaper). Compare both in the 100-profile test.
+effort = "low"
+max_profiles_per_run = 60
+# Price per million tokens, used only for budget estimates.
+input_usd_per_mtok  = 4.00
+output_usd_per_mtok = 20.00
+est_input_tokens_per_profile  = 1800
+est_output_tokens_per_profile = 900
+
+[contacts]
+fetch_websites = true          # free: visit the bio link / link-in-bio page and look for emails
+max_pages_per_lead = 4
+request_timeout_seconds = 12
+use_hunter = false             # set true (or pass --hunter) once HUNTER_API_KEY is set

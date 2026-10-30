@@ -1,0 +1,28 @@
+# Cheap yes/no checks run in Python BEFORE Claude sees a profile.
+# Their only job is to throw out obvious misses so you don't pay Claude to read them.
+# Set these numbers from your existing ICP. Keep them loose: Claude makes the real call.
+
+min_followers = 2000
+max_followers = 250000
+min_posts = 20
+# Drop profiles with no post in this many days (needs post dates in the data).
+max_days_since_last_post = 45
+require_public = true
+require_business_or_creator_account = false
+require_external_link = true          # no website / link-in-bio = hard to reach and weaker buyer
+
+# At least one of these must appear in bio, category, or name (case-insensitive).
+# Leave empty to skip this check.
+include_any = [
+  "coach", "coaching", "mentor", "consultant", "consulting",
+  "scale", "clients", "entrepreneur", "founder", "business",
+]
+
+# Any of these in bio/category/name = drop.
+exclude_any = [
+  "fitness coach", "personal trainer", "nutrition", "crypto", "forex",
+  "onlyfans", "meme", "fan page", "fanpage", "video editor", "editing services",
+]
+
+# Categories (Instagram business category) to drop outright.
+exclude_categories = ["Video Creator", "Gamer", "Musician/Band", "Artist"]

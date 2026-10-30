@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Lead data contains personal/business contact info: keep it out of git.
+data/*
+!data/.gitkeep

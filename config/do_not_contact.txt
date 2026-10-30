@@ -1,0 +1,5 @@
+# Handles, emails, or domains that should never appear in exports again.
+# One per line. Examples:
+# @somehandle
+# someone@example.com
+# example.com

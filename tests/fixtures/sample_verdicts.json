@@ -1,0 +1,57 @@
+[
+ {
+  "username": "demo.coach.alpha",
+  "qualified": true,
+  "score": 86,
+  "tier": "A",
+  "reasons": [
+   "Business coach selling a coaching offer",
+   "Posts reels weekly, basic editing"
+  ],
+  "disqualifiers": [],
+  "content_observations": "Talking-head reels with no captions or b-roll; hooks start slow.",
+  "mockup_angle": "Re-cut one reel with a 2-second hook, captions and pattern interrupts.",
+  "confidence": "high"
+ },
+ {
+  "username": "demo.coach.bravo",
+  "qualified": true,
+  "score": 72,
+  "tier": "B",
+  "reasons": [
+   "Consultant coach with high-ticket offer"
+  ],
+  "disqualifiers": [],
+  "content_observations": "Consistent posting, inconsistent visual style.",
+  "mockup_angle": "Branded caption style and tighter pacing.",
+  "confidence": "medium"
+ },
+ {
+  "username": "demo.coach.hotel",
+  "qualified": true,
+  "score": 91,
+  "tier": "A",
+  "reasons": [
+   "Established coach with podcast = lots of raw footage"
+  ],
+  "disqualifiers": [],
+  "content_observations": "Podcast clips posted raw, horizontal crops.",
+  "mockup_angle": "Turn a podcast clip into a vertical short with dynamic captions.",
+  "confidence": "high"
+ },
+ {
+  "username": "demo.consult.india",
+  "qualified": false,
+  "score": 35,
+  "tier": "C",
+  "reasons": [
+   "Posts carousels only"
+  ],
+  "disqualifiers": [
+   "No video content"
+  ],
+  "content_observations": "No short-form video.",
+  "mockup_angle": "n/a",
+  "confidence": "medium"
+ }
+]
