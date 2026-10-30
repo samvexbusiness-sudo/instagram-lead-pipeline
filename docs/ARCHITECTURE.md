@@ -253,6 +253,24 @@ Use keywords only to find the first seeds, then snowball. Command: `python run.p
 Email sources across both rounds (16 emails / 31 qualified = 52%): Instagram contact button 9, their own
 site via the contact Actor 5, Hunter 2 (Hunter found nothing for 7 of 9 solo-coach domains, so it's a weak fallback).
 
+### Round 3–4 (2026-10-30): no follower cap, closing the email gap
+
+* **Follower count is not a money signal** (Sam). Floor lowered to 500 (dead accounts only), cap raised to 150k,
+  and a new free check requires a visible offer/funnel (link, DM/comment keyword, apply/book CTA).
+  Re-running the filter on already-paid data recovered 18 profiles → 6 qualified, at $0.
+* **Lookalike round 4:** 603 new suggestions → 179 after the free name check → 120 scraped ($0.31)
+  → 69 passed the filter → **27 qualified (23%)** → 18 with email (67%).
+* **Why ~half have no email:** a deep crawl (Contact Details Scraper, 38 pages incl. /contact) of 8 sites
+  found 1 email. These coaches deliberately keep email off their sites and route people to application
+  forms, call bookings and DMs. It's mostly the nature of the niche, not a scraping problem.
+* **What does move the number:** Hunter **Email Finder** (person's name + their own domain, Hunter checks
+  that one address): 4 found of 8 tries where everything else failed. It's now a pipeline step
+  (`contacts.from_hunter_finder`). Hunter *Domain Search* is close to useless for solo coaches.
+* Email order that works: Instagram contact button → own site via bio link (Apify contact Actor)
+  → Hunter Email Finder by name. Platform inboxes (calendly, skool, kajabi...) are filtered out as junk.
+
+Running total for the day: 39 new email leads in Notion (+1 already there), ~$1.80 Apify, 6 Hunter credits.
+
 ## 7. Costs and recommended limits
 
 Assumed funnel (replace with test results): 35% pass pre-filter, 40% of those qualify,

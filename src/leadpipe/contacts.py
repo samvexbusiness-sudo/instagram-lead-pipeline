@@ -31,6 +31,9 @@ JUNK_DOMAINS = {
     "example.com", "domain.com", "email.com", "sentry.io", "wixpress.com", "sentry-next.wixpress.com",
     "godaddy.com", "squarespace.com", "shopify.com", "wordpress.com", "yourdomain.com", "mysite.com",
     "test.com", "linktr.ee", "beacons.ai", "stan.store",
+    # platform inboxes that show up on booking/community pages (2026-10-30 test)
+    "calendly.com", "skool.com", "kajabi.com", "mykajabi.com", "thrivecart.com", "kit.com", "convertkit.com",
+    "samcart.com", "stripe.com", "unfold.com", "wix.com", "squarespace.com", "teachable.com",
 }
 JUNK_LOCAL = {"noreply", "no-reply", "donotreply", "privacy", "abuse", "postmaster", "webmaster", "user", "name", "email"}
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg")
@@ -190,6 +193,48 @@ def from_hunter(leads: list[dict], api_key: str, guard: BudgetGuard) -> int:
     return used
 
 
+def person_name(lead: dict) -> str | None:
+    """'Lauren Evans | Business Finance Coach' -> 'Lauren Evans'. None if no first + last name."""
+    raw = (lead["profile"].get("full_name") or "")
+    raw = re.split(r"[|•·\-–—:,(\[/]| x ", raw)[0]
+    words = [w for w in re.findall(r"[A-Za-zÀ-ÿ'’]+", raw) if len(w) > 1]
+    if len(words) < 2 or len(words) > 3:
+        return None
+    if any(w.lower() in {"coach", "business", "sales", "marketing", "online", "the", "mentor", "official"} for w in words):
+        return None
+    return " ".join(w.capitalize() if w.isupper() else w for w in words)
+
+
+def from_hunter_finder(leads: list[dict], api_key: str, guard: BudgetGuard) -> int:
+    """Name + own domain -> Hunter checks that one address. Test 2026-10-30: 3 of 5 found
+    where the site and domain search had nothing. Charged only when found."""
+    targets = []
+    for l in leads:
+        dom = l["contacts"].get("website_domain") or _own_site_domain(l["profile"].get("external_urls") or [])
+        name = person_name(l)
+        if not l["contacts"]["emails"] and dom and name and dom not in FREEMAIL:
+            targets.append((l, name, dom))
+    if not targets:
+        return 0
+    guard.authorize(Estimate("hunter", f"Hunter Email Finder for {len(targets)} people", len(targets), "credits"))
+    used = 0
+    for lead, name, dom in targets:
+        try:
+            r = requests.get("https://api.hunter.io/v2/email-finder",
+                             params={"domain": dom, "full_name": name, "api_key": api_key}, timeout=20)
+        except requests.RequestException:
+            continue
+        if r.status_code == 429:
+            break
+        data = (r.json() or {}).get("data") or {}
+        if data.get("email"):
+            used += 1
+            _add(lead, data["email"].lower(), "hunter", f"hunter finder: {name} @ {dom}", dom, data.get("score"))
+            _pick_best(lead)
+    guard.record("hunter", used, f"email finder x{used}", unit="credits")
+    return used
+
+
 # ---------------- 4. Apify contact Actor (optional) ----------------
 
 def from_apify_actor(leads: list[dict], apify, settings: dict) -> int:
@@ -239,6 +284,7 @@ def run(store, cfg, guard: BudgetGuard, use_hunter: bool, apify=None) -> dict:
             print("[hunter] HUNTER_API_KEY not set; skipping.")
         else:
             hunter_used = from_hunter(leads, key, guard)
+            hunter_used += from_hunter_finder(leads, key, guard)
     apify_hits = from_apify_actor(leads, apify, cfg.settings["apify"]) if apify else 0
     store.save()
     found = sum(1 for l in leads if l["contacts"]["best_email"])

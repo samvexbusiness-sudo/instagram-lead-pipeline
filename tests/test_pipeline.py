@@ -96,6 +96,15 @@ class TestContacts(unittest.TestCase):
         self.assertEqual(lead["contacts"]["best_email"], "team@coach.com")
 
 
+class TestPersonName(unittest.TestCase):
+    def test_names(self):
+        f = lambda n: contacts.person_name({"profile": {"full_name": n}})
+        self.assertEqual(f("Lauren Evans | Business Finance Coach"), "Lauren Evans")
+        self.assertEqual(f("KATE MCKIBBIN / HELLOFUNNELS"), "Kate Mckibbin")
+        self.assertIsNone(f("Online Business Coach"))
+        self.assertIsNone(f("Rosie"))
+
+
 class TestBudget(unittest.TestCase):
     def _guard(self, d, approved):
         caps = {"apify_per_run_usd": 1, "apify_daily_usd": 1.5, "apify_monthly_usd": 10}

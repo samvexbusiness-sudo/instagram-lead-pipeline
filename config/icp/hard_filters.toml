@@ -2,8 +2,9 @@
 # Set from the 60-second triage in Sam's sam-freelance-business skill. Kept loose:
 # Claude (with ICP_CRITERIA.md) makes the real call, Sam still watches before sending anything.
 
-min_followers = 2000          # "not so small they are broke" (Sam 2026-10-30, number is my guess, tune it)
-max_followers = 40000         # triage check 1: "under about 40K followers"
+min_followers = 500           # just drops dead/new accounts. Size is NOT a money signal (Sam 2026-10-30): an offer/funnel is
+max_followers = 150000        # bigger accounts reply less, but don't throw them out (Sam 2026-10-30)
+require_offer_signal = true   # must show an offer/funnel: link in bio, DM/comment keyword, apply/book CTA
 exclude_verified = false      # blue check is fine (Sam, 2026-10-30)
 min_posts = 15
 max_days_since_last_post = 30

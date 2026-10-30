@@ -72,6 +72,7 @@ def profile_card(lead: dict) -> dict:
         "is_business": p.get("is_business"),
         "verified": p.get("is_verified"),
         "links": p.get("external_urls"),
+        "note_on_size": "Follower count is NOT a money signal. Judge budget from the offer/funnel (paid program, application, call booking, lead magnet).",
         "engagement_rate_pct": p.get("engagement_rate_pct"),
         "days_since_last_post": posts.get("days_since_last_post"),
         "avg_days_between_posts": posts.get("avg_days_between_posts"),

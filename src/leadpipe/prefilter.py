@@ -6,6 +6,22 @@ The real ICP judgement happens in qualify.py with your own criteria.
 from __future__ import annotations
 
 
+import re
+
+OFFER_RE = re.compile(
+    r"\b(dm|comment|message)\b[^.\n]{0,25}[\"“'”]?[A-Z]{3,}|link in (my )?bio|apply|book (a|your|now)|free (training|masterclass|guide|"
+    r"workshop|class|call|checklist|webinar)|waitlist|enrol|enroll|join (my|the|our)|work with me|start here|strategy (call|session)",
+    re.I)
+
+
+def has_offer_signal(profile: dict) -> bool:
+    """Money proxy: they already sell something (Sam: an offer/funnel matters more than follower count)."""
+    if profile.get("external_url"):
+        return True
+    text = (profile.get("bio") or "") + " " + " ".join(r.get("caption") or "" for r in (profile.get("posts") or {}).get("recent", []))
+    return bool(OFFER_RE.search(text))
+
+
 def check(profile: dict, rules: dict) -> tuple[bool, list[str]]:
     reasons: list[str] = []
     followers = profile.get("followers")
@@ -39,6 +55,9 @@ def check(profile: dict, rules: dict) -> tuple[bool, list[str]]:
         en = posts.get("english_score")
         if en is not None and en < rules.get("min_english_score", 0.12):
             reasons.append(f"captions not in English (score {en})")
+
+    if rules.get("require_offer_signal") and not has_offer_signal(profile):
+        reasons.append("no visible offer or funnel (no link, no DM/comment keyword, no apply/book CTA)")
 
     if rules.get("require_business_or_creator_account") and not profile.get("is_business"):
         reasons.append("not a business/creator account")
