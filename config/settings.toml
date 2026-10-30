@@ -51,5 +51,6 @@ fetch_websites = true          # free: visit the bio link / link-in-bio page and
 max_pages_per_lead = 4
 request_timeout_seconds = 12
 use_hunter = false             # set true (or pass --hunter) once HUNTER_API_KEY is set
+check_mail_provider = true     # free DNS lookup: drops dead domains, tags google/microsoft/etc.
 # Test 2026-10-30: the Apify contact Actor is the best email source. It returns the email
 # behind Instagram's contact button, which the search Actor doesn't. ~$0.005 per qualified lead.

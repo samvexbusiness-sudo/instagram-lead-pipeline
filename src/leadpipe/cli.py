@@ -196,6 +196,7 @@ def cmd_demo(args):
     print("3. qualify batch file: ", batch.relative_to(root) if batch else None)
     print("   import verdicts:    ", qualify.import_manual_batch(store, fixtures / "sample_verdicts.json"))
     cfg.settings["contacts"]["fetch_websites"] = False  # offline demo
+    cfg.settings["contacts"]["check_mail_provider"] = False
     print("4. contacts:           ", contacts.run(store, cfg, guard, use_hunter=False))
     print("5. export:             ", export.run(store, cfg.paths.exports, cfg.paths.handoff, 20, True))
     print(f"\nDemo output is in {demo_dir.relative_to(root)}/ (safe to delete).")

@@ -32,6 +32,7 @@ def handoff_record(lead: dict) -> dict:
         "website": p.get("external_url"),
         "best_email": c.get("best_email"),
         "email_source": next((e["source"] for e in c.get("emails", []) if e["email"] == c.get("best_email")), None),
+        "mail_provider": c.get("best_provider"),
         "all_emails": [e["email"] for e in c.get("emails", [])],
         "phones": c.get("phones", []),
         "tier": q.get("tier"),
@@ -67,7 +68,7 @@ def run(store, out_dir: Path, handoff_dir: Path, limit: int, require_email: bool
 
     csv_path = Path(out_dir) / f"leads_{stamp}.csv"
     cols = ["username", "profile_url", "full_name", "tier", "score", "best_email", "email_source",
-            "website", "followers", "engagement_rate_pct", "category", "mockup_angle", "content_observations"]
+            "mail_provider", "website", "followers", "engagement_rate_pct", "category", "mockup_angle", "content_observations"]
     with open(csv_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
         w.writeheader()

@@ -36,6 +36,7 @@ JUNK_DOMAINS = {
     "samcart.com", "stripe.com", "unfold.com", "wix.com", "squarespace.com", "teachable.com",
 }
 JUNK_LOCAL = {"noreply", "no-reply", "donotreply", "privacy", "abuse", "postmaster", "webmaster", "user", "name", "email"}
+HELPDESK_LOCAL = {"help", "support", "helpdesk", "billing", "orders", "accounts", "admin", "customerservice", "care"}
 IMAGE_EXT = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg")
 FREEMAIL = {"gmail.com", "outlook.com", "hotmail.com", "yahoo.com", "icloud.com", "proton.me", "protonmail.com", "aol.com"}
 CONTACT_PATHS = ("/contact", "/contact-us", "/about", "/work-with-me")
@@ -66,7 +67,9 @@ def score_email(email: str, source: str, site_domain: str | None, hunter_conf: i
         s += 5
     if hunter_conf is not None:
         s += hunter_conf // 10
-    return min(s, 100)
+    if email.split("@")[0].lower() in HELPDESK_LOCAL:
+        s -= 40  # past sends to support@/help@ inboxes got ticket bots, not the coach
+    return max(min(s, 100), 0)
 
 
 def _add(lead: dict, email: str, source: str, where: str, site_domain: str | None, conf: int | None = None) -> None:
@@ -80,7 +83,67 @@ def _add(lead: dict, email: str, source: str, where: str, site_domain: str | Non
 def _pick_best(lead: dict) -> None:
     emails = sorted(lead["contacts"]["emails"], key=lambda e: e["score"], reverse=True)
     lead["contacts"]["emails"] = emails
-    lead["contacts"]["best_email"] = emails[0]["email"] if emails else None
+    usable = [e for e in emails if e.get("provider") != "no_mail_server"]
+    lead["contacts"]["best_email"] = usable[0]["email"] if usable else None
+    lead["contacts"]["best_provider"] = usable[0].get("provider") if usable else None
+
+
+# ---------------- mail provider check (free, public DNS) ----------------
+# Test 2026-10-30: cold mail from a free Gmail address landed in Outlook's Junk folder,
+# while Google inboxes were fine. 85% of past recipients were on Google, 5% on Microsoft,
+# and 2 addresses had no mail server at all. So: drop dead domains, flag Microsoft.
+
+DOH_URL = "https://dns.google/resolve"
+
+
+def classify_mx(hosts: list[str]) -> str:
+    s = " ".join(h.lower() for h in hosts)
+    if not hosts:
+        return "no_mail_server"
+    if "google" in s:
+        return "google"
+    if any(x in s for x in ("outlook.com", "office365", "hotmail")):
+        return "microsoft"
+    if "yahoodns" in s or "yahoo" in s:
+        return "yahoo"
+    if "icloud" in s:
+        return "apple"
+    if "zoho" in s:
+        return "zoho"
+    return "other"
+
+
+def _lookup_mx(domain: str, timeout: int = 10) -> list[str] | None:
+    """MX hosts for a domain via DNS-over-HTTPS. None means the lookup itself failed."""
+    try:
+        r = requests.get(DOH_URL, params={"name": domain, "type": "MX"}, timeout=timeout)
+        r.raise_for_status()
+        data = r.json()
+    except (requests.RequestException, ValueError):
+        return None
+    if data.get("Status") == 3:  # NXDOMAIN: the domain doesn't exist
+        return []
+    return [a["data"].split()[-1].rstrip(".") for a in data.get("Answer", []) if a.get("type") == 15]
+
+
+def check_providers(leads: list[dict], lookup=_lookup_mx) -> dict:
+    """Tag every found email with its mail provider. Emails on a domain with no mail
+    server are never picked as best_email. Lookup failures leave the email untouched."""
+    cache: dict[str, str | None] = {}
+    counts: dict[str, int] = {}
+    for lead in leads:
+        for e in lead["contacts"]["emails"]:
+            dom = normalize_domain(e["email"])
+            if dom not in cache:
+                hosts = lookup(dom)
+                cache[dom] = None if hosts is None else classify_mx(hosts)
+            if cache[dom]:
+                e["provider"] = cache[dom]
+        _pick_best(lead)
+        p = lead["contacts"].get("best_provider")
+        if lead["contacts"]["best_email"]:
+            counts[p or "unknown"] = counts.get(p or "unknown", 0) + 1
+    return counts
 
 
 # ---------------- 1. Instagram data ----------------
@@ -286,6 +349,8 @@ def run(store, cfg, guard: BudgetGuard, use_hunter: bool, apify=None) -> dict:
             hunter_used = from_hunter(leads, key, guard)
             hunter_used += from_hunter_finder(leads, key, guard)
     apify_hits = from_apify_actor(leads, apify, cfg.settings["apify"]) if apify else 0
+    providers = check_providers(leads) if s.get("check_mail_provider", True) else {}
     store.save()
     found = sum(1 for l in leads if l["contacts"]["best_email"])
-    return {"checked": len(leads), "with_email": found, "hunter_credits": hunter_used, "apify_contacts": apify_hits}
+    return {"checked": len(leads), "with_email": found, "hunter_credits": hunter_used,
+            "apify_contacts": apify_hits, "providers": providers}

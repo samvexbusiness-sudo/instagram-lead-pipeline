@@ -88,12 +88,40 @@ class TestContacts(unittest.TestCase):
         self.assertEqual(lead["contacts"]["best_email"], "hello@somecoach.com")
         self.assertEqual(lead["contacts"]["website_domain"], "somecoach.com")
 
+    def test_helpdesk_ranks_below_named_person(self):
+        lead = {"contacts": {"emails": []}}
+        contacts._add(lead, "help@funnels.co", "instagram", "x", "funnels.co")
+        contacts._add(lead, "kate@funnels.co", "hunter", "x", "funnels.co", conf=90)
+        contacts._pick_best(lead)
+        self.assertEqual(lead["contacts"]["best_email"], "kate@funnels.co")
+
     def test_own_domain_email_ranks_above_gmail(self):
         lead = {"contacts": {"emails": []}}
         contacts._add(lead, "coach123@gmail.com", "website", "x", "coach.com")
         contacts._add(lead, "team@coach.com", "website", "x", "coach.com")
         contacts._pick_best(lead)
         self.assertEqual(lead["contacts"]["best_email"], "team@coach.com")
+
+
+class TestMailProvider(unittest.TestCase):
+    def test_classify(self):
+        self.assertEqual(contacts.classify_mx(["aspmx.l.google.com"]), "google")
+        self.assertEqual(contacts.classify_mx(["coach-com.mail.protection.outlook.com"]), "microsoft")
+        self.assertEqual(contacts.classify_mx(["mx00.ionos.co.uk"]), "other")
+        self.assertEqual(contacts.classify_mx([]), "no_mail_server")
+
+    def test_dead_domain_never_best_and_failed_lookup_kept(self):
+        mx = {"deadcoach.com": [], "goodcoach.com": ["aspmx.l.google.com"], "flaky.com": None}
+        lead = {"contacts": {"emails": []}}
+        contacts._add(lead, "hi@deadcoach.com", "instagram", "x", "deadcoach.com")
+        contacts._add(lead, "me@goodcoach.com", "website", "x", None)
+        lead2 = {"contacts": {"emails": []}}
+        contacts._add(lead2, "a@flaky.com", "website", "x", None)
+        counts = contacts.check_providers([lead, lead2], lookup=lambda d: mx[d])
+        self.assertEqual(lead["contacts"]["best_email"], "me@goodcoach.com")
+        self.assertEqual(lead["contacts"]["best_provider"], "google")
+        self.assertEqual(lead2["contacts"]["best_email"], "a@flaky.com")  # lookup failed: keep it
+        self.assertEqual(counts, {"google": 1, "unknown": 1})
 
 
 class TestPersonName(unittest.TestCase):
