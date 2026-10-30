@@ -214,6 +214,29 @@ verdicts, scale to the daily run below.
 
 ---
 
+### Test results (2026-10-30, real run)
+
+| Step | Result |
+|---|---|
+| Discover: 5 keywords × 20 | 94 profiles in 36 s (6 not found / restricted) — **$0.25** |
+| Free filter | 21 pass (38 not English, 19 too few videos, 32 follower range, 10 music-only reels, rest misc) |
+| Qualify (Claude, in chat) | **12 qualified** (2 A, 10 B), 9 rejected (software sellers, carousels-only, meme reels, dead engagement) |
+| Emails | **7 of 12** — 3 from Instagram's contact button, 2 from bio-link sites, 2 from Hunter |
+| Total cost | **$0.31 Apify + 2 Hunter credits**, $0 Claude API |
+
+Funnel: 94 → 12 qualified (13%) → 7 with email (**7.4% of discovered**, close to the 7.7% guess).
+Cost per qualified lead with email: **~$0.045**. 20/day ≈ 270 profiles/day ≈ $0.75/day on Apify.
+
+Lessons, already applied in the code:
+* Instagram search returns lots of non-English and off-niche accounts. The free filter now checks
+  English captions and talking-head signals before anything is paid for or judged.
+* Talking-head proxy: Apify includes `musicInfo` only when a reel uses a licensed song. No `musicInfo`
+  = original audio = usually someone talking. 75% of reels in the test were original audio.
+* The search Actor does **not** return the Instagram contact-button email. The contact Actor does,
+  and it found 5 of the 7 emails. It only handles 3 profiles per run on Apify's free plan, so the code batches by 3.
+* Keyword choice matters: "coach for coaches" pulled in football coaches and bus companies.
+  Prefer phrases like "sales coach", "business coach for coaches", "high ticket coach".
+
 ## 7. Costs and recommended limits
 
 Assumed funnel (replace with test results): 35% pass pre-filter, 40% of those qualify,

@@ -197,9 +197,14 @@ def from_apify_actor(leads: list[dict], apify, settings: dict) -> int:
     if not targets:
         return 0
     price = settings["contact_price_per_profile"] + settings["contact_price_per_contact"] * 2
-    items = apify.run_actor(settings["contact_actor"],
-                            {"usernames": [l["username"] for l in targets], "scrapeLinkInBio": True},
-                            max_items=len(targets), price_per_item=price, label="contacts")
+    # This Actor only processes 3 profiles per run on Apify's free plan (found in the 2026-10-30 test).
+    batch = settings.get("contact_batch_size", 3)
+    items = []
+    for i in range(0, len(targets), batch):
+        chunk = targets[i:i + batch]
+        items += apify.run_actor(settings["contact_actor"],
+                                 {"usernames": [l["username"] for l in chunk], "scrapeLinkInBio": True},
+                                 max_items=len(chunk), price_per_item=price, label="contacts")
     by_user = {l["username"]: l for l in targets}
     hits = 0
     for item in items:

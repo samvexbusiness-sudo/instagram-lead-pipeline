@@ -28,6 +28,18 @@ def check(profile: dict, rules: dict) -> tuple[bool, list[str]]:
     if limit and days is not None and days > limit:
         reasons.append(f"last post {days:.0f} days ago (> {limit})")
 
+    posts = profile.get("posts") or {}
+    vs = posts.get("video_share")
+    if rules.get("min_video_share") is not None and vs is not None and vs < rules["min_video_share"]:
+        reasons.append(f"few videos ({vs:.0%} of recent posts)")
+    oa = posts.get("original_audio_share")
+    if rules.get("min_original_audio_share") is not None and oa is not None and oa < rules["min_original_audio_share"]:
+        reasons.append(f"reels mostly music, not talking ({oa:.0%} original audio)")
+    if rules.get("require_english"):
+        en = posts.get("english_score")
+        if en is not None and en < rules.get("min_english_score", 0.12):
+            reasons.append(f"captions not in English (score {en})")
+
     if rules.get("require_business_or_creator_account") and not profile.get("is_business"):
         reasons.append("not a business/creator account")
     if rules.get("require_external_link") and not profile.get("external_url"):

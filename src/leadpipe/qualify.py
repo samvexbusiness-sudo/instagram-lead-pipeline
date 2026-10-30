@@ -77,8 +77,10 @@ def profile_card(lead: dict) -> dict:
         "avg_days_between_posts": posts.get("avg_days_between_posts"),
         "video_share_of_recent_posts": posts.get("video_share"),
         "avg_video_views": posts.get("avg_video_views"),
+        "reels_with_original_audio_share": posts.get("original_audio_share"),
+        "list_style_caption_share": posts.get("list_caption_share"),
         "recent_posts": [
-            {k: r.get(k) for k in ("type", "timestamp", "caption", "likes", "comments", "views")}
+            {k: r.get(k) for k in ("type", "timestamp", "caption", "likes", "comments", "views", "original_audio")}
             for r in posts.get("recent", [])
         ],
     }

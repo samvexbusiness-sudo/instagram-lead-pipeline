@@ -28,6 +28,7 @@ profile_price_per_result = 0.0026
 contact_actor = "memo23/instagram-email-phone-scraper"
 contact_price_per_profile = 0.002
 contact_price_per_contact = 0.005
+contact_batch_size = 3   # free Apify plan: this Actor stops after 3 profiles per run
 # How long to wait for one Actor run before giving up (seconds).
 run_timeout_seconds = 900
 
@@ -50,3 +51,5 @@ fetch_websites = true          # free: visit the bio link / link-in-bio page and
 max_pages_per_lead = 4
 request_timeout_seconds = 12
 use_hunter = false             # set true (or pass --hunter) once HUNTER_API_KEY is set
+# Test 2026-10-30: the Apify contact Actor is the best email source. It returns the email
+# behind Instagram's contact button, which the search Actor doesn't. ~$0.005 per qualified lead.

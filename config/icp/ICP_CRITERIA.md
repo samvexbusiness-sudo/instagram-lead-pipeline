@@ -23,6 +23,10 @@ A prospect needs an Instagram OR an email. **Email is the last check, not a gate
 
 ---
 
+Updates from Sam (newer than the skill text above, these win):
+- 2026-10-30: a blue checkmark is fine. Ignore the "no checkmark" part of check 1.
+- 2026-10-30: these criteria are older and will be updated.
+
 Notes for judging from scraped data (added by the pipeline, not part of the ICP):
 - You only see captions, post types and stats, not the videos. For check 2, judge from what's visible
   (reels vs carousels, list-style captions, view counts) and put "needs a human look" in reasons when unsure.
