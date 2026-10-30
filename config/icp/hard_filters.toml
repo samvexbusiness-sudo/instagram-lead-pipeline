@@ -1,28 +1,28 @@
 # Cheap yes/no checks run in Python BEFORE Claude sees a profile.
-# Their only job is to throw out obvious misses so you don't pay Claude to read them.
-# Set these numbers from your existing ICP. Keep them loose: Claude makes the real call.
+# Set from the 60-second triage in Sam's sam-freelance-business skill. Kept loose:
+# Claude (with ICP_CRITERIA.md) makes the real call, Sam still watches before sending anything.
 
-min_followers = 2000
-max_followers = 250000
-min_posts = 20
-# Drop profiles with no post in this many days (needs post dates in the data).
-max_days_since_last_post = 45
+min_followers = 1000          # skill sets no floor (old 2-5K band retired); this just drops dead accounts
+max_followers = 40000         # triage check 1: "under about 40K followers"
+exclude_verified = true       # triage check 1: "no checkmark"
+min_posts = 15
+max_days_since_last_post = 30
 require_public = true
 require_business_or_creator_account = false
-require_external_link = true          # no website / link-in-bio = hard to reach and weaker buyer
+require_external_link = false # "Email is the last check, not a gate"
 
-# At least one of these must appear in bio, category, or name (case-insensitive).
-# Leave empty to skip this check.
+# Triage check 3 + niche: sells coaching/info to founders and professionals.
 include_any = [
-  "coach", "coaching", "mentor", "consultant", "consulting",
-  "scale", "clients", "entrepreneur", "founder", "business",
+  "coach", "coaching", "mentor", "consultant", "consulting", "founder",
+  "entrepreneur", "clients", "scale", "high ticket", "high-ticket", "business",
 ]
 
-# Any of these in bio/category/name = drop.
+# Not software, not content services (competitors), and off-niche coaches.
 exclude_any = [
-  "fitness coach", "personal trainer", "nutrition", "crypto", "forex",
-  "onlyfans", "meme", "fan page", "fanpage", "video editor", "editing services",
+  "fitness coach", "personal trainer", "nutrition", "weight loss", "crypto", "forex", "trading",
+  "onlyfans", "meme", "fan page", "fanpage",
+  "video editor", "editing services", "content agency", "social media manager", "smm agency",
+  "ugc creator", "saas", "software",
 ]
 
-# Categories (Instagram business category) to drop outright.
-exclude_categories = ["Video Creator", "Gamer", "Musician/Band", "Artist"]
+exclude_categories = ["Video Creator", "Gamer", "Musician/Band", "Artist", "Software Company"]

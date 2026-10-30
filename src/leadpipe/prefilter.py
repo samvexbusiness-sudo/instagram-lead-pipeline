@@ -13,6 +13,8 @@ def check(profile: dict, rules: dict) -> tuple[bool, list[str]]:
 
     if rules.get("require_public", True) and profile.get("is_private"):
         reasons.append("private account")
+    if rules.get("exclude_verified") and profile.get("is_verified"):
+        reasons.append("verified (checkmark)")
     if followers is not None:
         if followers < rules.get("min_followers", 0):
             reasons.append(f"followers {followers} < {rules['min_followers']}")
