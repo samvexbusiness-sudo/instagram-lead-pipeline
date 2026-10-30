@@ -6,6 +6,7 @@ unless you add --approve-spend.
 from __future__ import annotations
 
 import argparse
+import re
 import json
 import shutil
 import sys
@@ -74,8 +75,22 @@ def cmd_snowball(args):
     cfg, store, guard = _ctx(args)
     s = cfg.settings["apify"]
     seeds = store.by_status("qualified", "exported")
+    # Best seeds first (tier A, high score), so the paid limit goes to the best lookalikes.
+    seeds.sort(key=lambda l: -((l.get("qualification") or {}).get("score") or 0))
+    names = {}
+    for l in seeds:
+        for r in l["profile"].get("related", []):
+            names.setdefault(r["username"].lower(), r.get("full_name") or "")
     candidates = [u for l in seeds for u in l["profile"].get("related_usernames", [])]
-    fresh = store.filter_new(candidates, cfg.settings["pipeline"]["recheck_after_days"])[: args.limit]
+    fresh = store.filter_new(candidates, cfg.settings["pipeline"]["recheck_after_days"])
+    # Free pre-screen on the name Instagram already gave us (2026-10-30 test: 274 -> 91, and
+    # those 91 qualified at 19% vs 2-13% for keyword search).
+    good = re.compile(cfg.hard_filters.get("lookalike_name_include", "."), re.I)
+    bad = re.compile(cfg.hard_filters.get("lookalike_name_exclude", "$^"), re.I)
+    before = len(fresh)
+    fresh = [u for u in fresh if good.search(u + " " + names.get(u, "")) and not bad.search(u + " " + names.get(u, ""))]
+    print(f"Name pre-screen (free): {before} -> {len(fresh)}")
+    fresh = fresh[: args.limit]
     if not fresh:
         print("No new related profiles to check yet. Qualify some leads first.")
         return

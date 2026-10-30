@@ -2,7 +2,7 @@
 # Set from the 60-second triage in Sam's sam-freelance-business skill. Kept loose:
 # Claude (with ICP_CRITERIA.md) makes the real call, Sam still watches before sending anything.
 
-min_followers = 1000          # skill sets no floor (old 2-5K band retired); this just drops dead accounts
+min_followers = 2000          # "not so small they are broke" (Sam 2026-10-30, number is my guess, tune it)
 max_followers = 40000         # triage check 1: "under about 40K followers"
 exclude_verified = false      # blue check is fine (Sam, 2026-10-30)
 min_posts = 15
@@ -28,6 +28,16 @@ exclude_any = [
   "bus ", "coach hire", "travel", "onlyfans", "meme", "fan page", "fanpage",
   "video editor", "editing services", "content agency", "social media manager", "smm agency",
   "ugc creator", "saas", "software",
+  # Sam 2026-10-30: tactical business value, not mindset/feelings; solo, not agencies
+  "mindset coach", "manifest", "spiritual", "soul", "healing", "nervous system", "emotional",
+  "therapist", "psychologist", "life coach", "wellbeing", "wellness",
+  "marketing agency", "digital marketing agency", "social media management", "social media marketing agency",
+  "agency ®", "we are a team", "real estate", "realtor", "mortgage",
 ]
 
 exclude_categories = ["Video Creator", "Gamer", "Musician/Band", "Artist", "Software Company"]
+
+# Lookalike ("suggested accounts") pre-screen. Runs on the name + handle Instagram gives us
+# for free, before we pay to scrape the profile.
+lookalike_name_include = "coach|sales|marketing|business|biz|funnel|strateg|mentor|content|system|ceo|growth|leader|consult|brand|client|scale|launch|offer|entrepreneur|founder|closer|ads"
+lookalike_name_exclude = "health|heal|fitness|fertility|nutrition|wellness|property|real ?estate|realtor|mortgage|legal|dentist|music|divorce|counsel|esthetic|jewel|photo|lending|broker|invest|wealth|cpa|mindful|soul|spiritual|craft|travel|dance|energy|agency|studio|ugc|smm|social media manag"

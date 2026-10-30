@@ -237,6 +237,22 @@ Lessons, already applied in the code:
 * Keyword choice matters: "coach for coaches" pulled in football coaches and bus companies.
   Prefer phrases like "sales coach", "business coach for coaches", "high ticket coach".
 
+### Round 2 (2026-10-30): lookalikes vs better keywords
+
+| Source | Scraped | Passed free filter | Qualified | With email | Cost (scrape + contacts) | Per lead with email |
+|---|---|---|---|---|---|---|
+| Keywords round 1 (5 broad terms) | 94 | 21 | 12 | 7 | $0.31 | $0.044 |
+| **Lookalikes** of the 12 qualified (name-screened 274 → 91) | 91 | 32 | **17** | **9** | ~$0.33 | **$0.037** |
+| Keywords round 2 (6 "tactical" terms) | 99 | 16 | 2 | 0 | ~$0.30 | n/a |
+
+**Lookalikes win.** "Suggested accounts" of good leads are the same kind of person: 19% qualify vs 2–13%
+for keyword search, and every new qualified lead brings ~35 more suggestions, so it feeds itself.
+Keyword search mostly surfaces "make money online" / network-marketing accounts and big inactive ones.
+Use keywords only to find the first seeds, then snowball. Command: `python run.py snowball --limit 100 --approve-spend`.
+
+Email sources across both rounds (16 emails / 31 qualified = 52%): Instagram contact button 9, their own
+site via the contact Actor 5, Hunter 2 (Hunter found nothing for 7 of 9 solo-coach domains, so it's a weak fallback).
+
 ## 7. Costs and recommended limits
 
 Assumed funnel (replace with test results): 35% pass pre-filter, 40% of those qualify,

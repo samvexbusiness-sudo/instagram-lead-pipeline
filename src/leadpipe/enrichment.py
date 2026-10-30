@@ -127,7 +127,9 @@ def normalize_profile(item: dict) -> dict:
         "profile_pic": item.get("profilePicUrlHD") or item.get("profilePicUrl"),
         "engagement_rate_pct": engagement,
         "posts": posts,
-        "related_usernames": [r.get("username") for r in item.get("relatedProfiles") or [] if r.get("username")],
+        "related_usernames": [r.get("username") for r in item.get("relatedProfiles") or [] if r.get("username") and not r.get("is_private")],
+        "related": [{"username": r.get("username"), "full_name": r.get("full_name")}
+                    for r in item.get("relatedProfiles") or [] if r.get("username") and not r.get("is_private")],
         "listed_emails": listed_emails + EMAIL_RE.findall(bio),
         "business_phone": item.get("businessPhoneNumber") or item.get("publicPhoneNumber"),
         "address_city": (item.get("businessAddress") or {}).get("city_name"),
