@@ -119,12 +119,12 @@ def export_manual_batch(store, icp_text: str, out_dir: Path, limit: int) -> Path
         WRAPPER + icp_text.strip() + "\n\n=== PROFILES (one JSON object per line) ===\n" + cards +
         "\n\n=== OUTPUT ===\nReply with ONLY a JSON array, one object per profile, each with exactly these keys: "
         + ", ".join(VERDICT_FIELDS) + ". No commentary before or after the array.\n"
-    )
+    , encoding="utf-8")
     return path
 
 
 def import_manual_batch(store, reply_path: Path) -> dict:
-    text = Path(reply_path).read_text()
+    text = Path(reply_path).read_text(encoding="utf-8")
     match = re.search(r"\[.*\]", text, re.S)   # tolerate ```json fences or stray text
     if not match:
         raise ValueError("Couldn't find a JSON array in that file.")

@@ -93,4 +93,4 @@ class ApifyClient:
         (folder / name).write_text(json.dumps(
             {"actor": actor, "input": run_input, "run": {k: run.get(k) for k in
              ("id", "status", "startedAt", "finishedAt", "usageTotalUsd", "defaultDatasetId")},
-             "items": items}, indent=1, ensure_ascii=False))
+             "items": items}, indent=1, ensure_ascii=False), encoding="utf-8")

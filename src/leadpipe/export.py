@@ -64,12 +64,12 @@ def run(store, out_dir: Path, handoff_dir: Path, limit: int, require_email: bool
     records = [handoff_record(l) for l in leads]
 
     json_path = Path(out_dir) / f"leads_{stamp}.json"
-    json_path.write_text(json.dumps(records, indent=1, ensure_ascii=False))
+    json_path.write_text(json.dumps(records, indent=1, ensure_ascii=False), encoding="utf-8")
 
     csv_path = Path(out_dir) / f"leads_{stamp}.csv"
     cols = ["username", "profile_url", "full_name", "tier", "score", "best_email", "email_source",
             "mail_provider", "website", "followers", "engagement_rate_pct", "category", "mockup_angle", "content_observations"]
-    with open(csv_path, "w", newline="") as f:
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
         w.writeheader()
         w.writerows(records)

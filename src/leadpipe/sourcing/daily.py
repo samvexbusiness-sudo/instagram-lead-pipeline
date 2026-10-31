@@ -24,7 +24,7 @@ from ..apify import ApifyClient, ApifyError
 from ..budget import BudgetGuard, SpendNotApproved
 from ..storage import GENERIC_LINK_DOMAINS, normalize_domain
 from . import icp
-from .notion import Notion, NotionError, build_properties, existing_keys
+from .notion import Notion, NotionError, build_properties, existing_keys, name_key
 from .youtube import MOCKUP, SPEC, SPEC_CARD, SPEC_FRAME, TAGS, UNMEASURED, BotCheck, YtDlp, channel_about, measure_channel, related_channels
 
 SOCIAL = ("instagram.com", "youtube.com", "youtu.be", "tiktok.com", "facebook.com", "linkedin.com",
@@ -36,7 +36,7 @@ class Seen:
 
     def __init__(self, path: Path):
         self.path = Path(path)
-        self.d = json.loads(self.path.read_text()) if self.path.exists() else {}
+        self.d = json.loads(self.path.read_text(encoding="utf-8")) if self.path.exists() else {}
 
     def skip(self, cid: str, recheck_days: int, today: date) -> bool:
         e = self.d.get(cid)
@@ -49,7 +49,7 @@ class Seen:
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(json.dumps(self.d, indent=1))
+        self.path.write_text(json.dumps(self.d, indent=1), encoding="utf-8")
 
 
 def _website(links: list[str]) -> list[str]:
@@ -265,7 +265,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
         c["about_text"] = about.get("description", "") + " " + " ".join(
             v.get("description", "") for v in c["footage"]["videos"][:1])
         if (c["instagram"] and f"ig:{c['instagram'].rstrip('/').split('/')[-1].lower()}" in known) \
-                or ("name:" + (c["channel"] or "").lower()) in known:
+                or ("name:" + (c["channel"] or "").lower()) in known \
+                or (name_key(c["channel"]) and name_key(c["channel"]) in known):
             stats["skipped_known"] += 1
             c["drop"] = "already in Notion"
             continue
@@ -339,7 +340,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps({"stats": stats, "rows": rows,
                                   "dropped": {c["channel"]: c.get("drop") for c in measured if c.get("drop")}},
-                                 indent=1, ensure_ascii=False))
+                                 indent=1, ensure_ascii=False), encoding="utf-8")
     return {"stats": stats, "rows": rows, "report": str(report)}
 
 

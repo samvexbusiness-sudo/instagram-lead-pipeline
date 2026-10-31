@@ -83,7 +83,7 @@ class LeadStore:
         self.do_not_contact = do_not_contact or set()
         self.leads: dict[str, dict] = {}
         if self.path.exists():
-            data = json.loads(self.path.read_text() or "{}")
+            data = json.loads(self.path.read_text(encoding="utf-8") or "{}")
             self.leads = data.get("leads", {})
 
     # ---------- persistence ----------
@@ -92,7 +92,7 @@ class LeadStore:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         payload = {"schema_version": SCHEMA_VERSION, "saved_at": now_iso(), "leads": self.leads}
         fd, tmp = tempfile.mkstemp(dir=self.path.parent, suffix=".tmp")
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=1, ensure_ascii=False, sort_keys=True)
         os.replace(tmp, self.path)
 

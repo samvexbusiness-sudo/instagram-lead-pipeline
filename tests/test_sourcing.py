@@ -208,3 +208,16 @@ class TestDailyRun(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestNameKey(unittest.TestCase):
+    def test_variants_match(self):
+        self.assertEqual(notion.name_key("Joanna Lott Coaching"), notion.name_key("Joanna Lott"))
+        self.assertEqual(notion.name_key("Justin Jay Johnson | Software Sales Coach"), "nm:justin jay")
+        self.assertEqual(notion.name_key("Eden"), "")
+
+    def test_unicode_report_writes(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "r.json"
+            p.write_text(json.dumps({"n": "Salesman․com"}, ensure_ascii=False), encoding="utf-8")
+            self.assertIn("․", p.read_text(encoding="utf-8"))

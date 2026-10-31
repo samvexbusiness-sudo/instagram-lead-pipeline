@@ -40,7 +40,7 @@ class BudgetGuard:
         if not self.ledger_path.exists():
             return []
         entries = []
-        for n, line in enumerate(self.ledger_path.read_text().splitlines(), 1):
+        for n, line in enumerate(self.ledger_path.read_text(encoding="utf-8").splitlines(), 1):
             if not line.strip():
                 continue
             try:
@@ -79,7 +79,7 @@ class BudgetGuard:
             "description": description,
             "meta": meta or {},
         }
-        with open(self.ledger_path, "a") as f:
+        with open(self.ledger_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry) + "\n")
 
     # ---------- caps ----------

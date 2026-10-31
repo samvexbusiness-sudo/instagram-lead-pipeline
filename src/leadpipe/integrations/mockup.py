@@ -26,4 +26,4 @@ class FolderQueueHandoff:
 
     def submit(self, record: dict) -> None:
         path = self.folder / f"{record['username']}.json"
-        path.write_text(json.dumps(record, indent=1, ensure_ascii=False))
+        path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8")

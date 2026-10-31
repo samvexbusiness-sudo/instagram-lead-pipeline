@@ -89,6 +89,15 @@ def keys_from_text(text: str) -> set[str]:
     return keys
 
 
+FILLER = {"coaching", "coach", "official", "llc", "inc", "co", "the", "with", "by", "academy", "consulting", "tv"}
+
+
+def name_key(name: str) -> str:
+    """'Joanna Lott Coaching' and 'Joanna Lott' -> 'nm:joanna lott'."""
+    words = [w for w in re.findall(r"[a-z]+", (name or "").lower().split("|")[0]) if w not in FILLER]
+    return "nm:" + " ".join(words[:2]) if len(words) >= 2 else ""
+
+
 def existing_keys(rows: list[dict]) -> set[str]:
     """Everything that identifies a prospect already in Notion: IG handle, YouTube
     channel, email, and the name (lowercased)."""
@@ -102,6 +111,8 @@ def existing_keys(rows: list[dict]) -> set[str]:
                 name = plain(p).strip().lower()
                 if name:
                     keys.add("name:" + name)
+                    if name_key(name):
+                        keys.add(name_key(name))
     return keys
 
 

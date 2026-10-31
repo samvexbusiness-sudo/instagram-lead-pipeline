@@ -171,7 +171,7 @@ Worst case total: about ${disc + claude_cost + 0.10:.2f}. Caps in config/setting
 
 def load_fixture(path: Path) -> list[dict]:
     """Fixture dates are stored relative to `reference_date`; shift them so they look recent."""
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding="utf-8"))
     shift = datetime.now(timezone.utc) - datetime.fromisoformat(data["reference_date"])
     for item in data["items"]:
         for post in item.get("latestPosts", []):
@@ -215,7 +215,7 @@ def cmd_source(args):
     print(f"Footage: Spec edit {st[SPEC]} | Spec, check frame {st[SPEC_FRAME]} | Spec, card layout {st[SPEC_CARD]} "
           f"| Mockup {st[MOCKUP]} | UNMEASURED {st[UNMEASURED]}  (bot checks {st['bot_checks']})")
     print(f"Free-check drops {st['dropped_free_checks']} | ICP checked {st['icp_checked']} | ICP pass {st['icp_pass']}"
-          + (f" | ICP not run (no ANTHROPIC_API_KEY) {st['icp_pending']}" if st["icp_pending"] else ""))
+          + (f" | ICP not run (no API key or no --approve-spend) {st['icp_pending']}" if st["icp_pending"] else ""))
     print("Rows: " + " | ".join(f"{t} {n}" for t, n in st["rows"].items())
           + f" | with email {st['with_email']} | written {st['written']}")
     print(f"Full report: {out['report']}")

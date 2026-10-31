@@ -48,7 +48,7 @@ def load_env(root: Path) -> None:
     env_file = root / ".env"
     if not env_file.exists():
         return
-    for line in env_file.read_text().splitlines():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -75,7 +75,7 @@ def _read_lines(path: Path) -> list[str]:
         return []
     return [
         ln.strip()
-        for ln in path.read_text().splitlines()
+        for ln in path.read_text(encoding="utf-8").splitlines()
         if ln.strip() and not ln.strip().startswith("#")
     ]
 
@@ -87,7 +87,7 @@ def load_config(root: Path | None = None, data_dir: Path | None = None) -> Confi
         settings = tomllib.load(f)
     with open(paths.config / "icp" / "hard_filters.toml", "rb") as f:
         hard_filters = tomllib.load(f)
-    icp_text = (paths.config / "icp" / "ICP_CRITERIA.md").read_text()
+    icp_text = (paths.config / "icp" / "ICP_CRITERIA.md").read_text(encoding="utf-8")
     keywords = _read_lines(paths.config / "keywords.txt")
     dnc = {x.lower().lstrip("@") for x in _read_lines(paths.config / "do_not_contact.txt")}
     for p in (paths.data, paths.raw, paths.exports, paths.handoff):
