@@ -4,14 +4,14 @@
 1. Searches YouTube for business coaches (24 queries in `config/settings.toml` → `[sourcing]`), plus channels suggested next to the ones that pass.
 2. **Footage check first (Gate 0).** It measures the newest 2 long-form videos and the newest Short from metadata only, with nothing downloaded. Usable width = min(width, height × 9/16), and each channel gets a tag, which becomes the Lane in Notion:
    - **Spec edit:** a long-form video with at least 900 px usable (3840×2160 → 1215).
-   - **Spec, check frame:** only a 1080×1920 Short passes.
-   - **Spec, card layout:** 1080p landscape long-form (1920×1080 → 608).
+   - **Spec - check frame:** only a 1080×1920 Short passes.
+   - **Spec - card layout:** 1080p landscape long-form (1920×1080 → 608).
    - **Mockup:** 720p or lower, or reel-only.
    - A YouTube bot check is never a verdict. The channel is UNMEASURED and tried again the next day.
 3. **ICP:** free checks first (excluded keywords, no upload in 30 days, over 40,000 subscribers, `max_subscribers`), then Claude Haiku runs the 7 checks against `config/icp/ICP_CRITERIA.md`.
 4. **Email:** YouTube About page and description, then their website, then the Apify Instagram contact Actor for anyone with an Instagram handle (batched 3 at a time, inside the Apify caps), then Hunter (only with `--hunter`). Any published email counts, support@ and info@ included.
 5. **Notion Prospects:** one row per survivor, written with:
-   - The footage tag as the Lane. Notion creates the two new Lane options, "Spec, check frame" and "Spec, card layout", the first time they're written.
+   - The footage tag as the Lane. Notion creates the two new Lane options, "Spec - check frame" and "Spec - card layout", the first time they're written.
    - Status Queued.
    - The measured resolution and video ID in Notes, and the video link in Asset.
    - Plus a "Sourcing · date" summary page under Outreach HQ.

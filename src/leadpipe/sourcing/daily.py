@@ -343,8 +343,12 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
 
     if not dry_run:
         for r in rows:
-            notion.create_row(s["notion_prospects_ds"], build_properties(schema, r))
-            stats["written"] += 1
+            try:
+                notion.create_row(s["notion_prospects_ds"], build_properties(schema, r))
+                stats["written"] += 1
+            except NotionError as e:  # one bad row must not lose the rest
+                stats.setdefault("write_errors", []).append(f"{r.get(s['col_name'])}: {e}")
+                print(f"[notion] skipped {r.get(s['col_name'])}: {e}")
         notion.create_page(s["notion_summary_parent"], f"Sourcing · {today.isoformat()}", summary_lines(stats, rows, s))
 
     report = cfg.paths.data / "sourcing" / f"run_{today.isoformat()}{'_dry' if dry_run else ''}.json"

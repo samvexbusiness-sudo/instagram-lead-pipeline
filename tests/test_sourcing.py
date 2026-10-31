@@ -191,7 +191,7 @@ class TestDailyRun(unittest.TestCase):
         self.assertEqual(st["dropped_free_checks"], 1)               # spiritual/soul/healing (477k is too_big)
         self.assertEqual(st["rows"], {SPEC: 1, SPEC_FRAME: 1, SPEC_CARD: 1, MOCKUP: 1})
         lanes = [r["Lane"] for r in out["rows"]]
-        self.assertEqual(lanes, ["Spec edit", "Spec, check frame", "Spec, card layout", "Mockup"])
+        self.assertEqual(lanes, ["Spec edit", "Spec - check frame", "Spec - card layout", "Mockup"])
         ana = out["rows"][0]
         self.assertEqual((ana["Name"], ana["Email"]), ("Sales Coach Ana", "ana@anasales.com"))
         self.assertIn("1215px usable after 9:16 crop, measured 3840x2160 long-form youtu.be/a1", ana["Notes"])
