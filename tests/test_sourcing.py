@@ -11,10 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from leadpipe.budget import BudgetGuard  # noqa: E402
+from leadpipe.budget import BudgetGuard, SpendNotApproved  # noqa: E402
 from leadpipe.config import load_config  # noqa: E402
 from leadpipe.sourcing import daily, notion  # noqa: E402
-from leadpipe.sourcing.youtube import FAIL, PASS, UNMEASURED, BotCheck, YtDlp, measure_channel, usable_width  # noqa: E402
+from leadpipe.sourcing.youtube import (MOCKUP, SPEC, SPEC_CARD, SPEC_FRAME, UNMEASURED, BotCheck, YtDlp,  # noqa: E402
+                                       measure_channel, usable_width)
 
 TODAY = date(2026, 10, 31)
 
@@ -46,7 +47,7 @@ class FakeYouTube:
             if vid in ch["meta"]:
                 w, h = ch["meta"][vid]
                 return ok(fmt(w, h) | {"title": f"{ch['name']} video {vid}", "upload_date": "20261028",
-                                       "channel": ch["name"], "channel_id": cid, "channel_follower_count": 5000,
+                                       "channel": ch["name"], "channel_id": cid, "channel_follower_count": ch.get("subs", 5000),
                                        "description": ch.get("desc", "")})
         return subprocess.CompletedProcess(cmd, 1, "", "ERROR: Video unavailable")
 
@@ -58,6 +59,9 @@ CHANNELS = {
     "UC" + "C" * 22: {"name": "Bot Checked Cara", "videos": ["c1"], "shorts": [], "meta": {"c1": (3840, 2160)}},
     "UC" + "D" * 22: {"name": "Spiritual Soul Healing", "videos": ["d1"], "shorts": [], "meta": {"d1": (3840, 2160)}},
     "UC" + "E" * 22: {"name": "Already Known Eve", "videos": ["e1"], "shorts": [], "meta": {"e1": (3840, 2160)}},
+    "UC" + "F" * 22: {"name": "Offer Coach Fay", "videos": ["f1"], "shorts": ["f2"], "meta": {"f1": (1280, 720), "f2": (1080, 1920)}},
+    "UC" + "G" * 22: {"name": "Low Res Coach Gil", "videos": ["g1"], "shorts": ["g2"], "meta": {"g1": (1280, 720), "g2": (720, 1280)}},
+    "UC" + "H" * 22: {"name": "Huge Sales Coach", "videos": ["h1"], "shorts": [], "meta": {"h1": (3840, 2160)}, "subs": 477000},
 }
 SEARCH = {"coach q": [{"id": f"s{i}", "channel_id": cid, "channel": ch["name"]} for i, (cid, ch) in enumerate(CHANNELS.items())]}
 
@@ -70,10 +74,13 @@ class TestFootage(unittest.TestCase):
         self.assertEqual(usable_width(1080, 1350), 759)   # 4:5 vertical is height-limited too
         self.assertEqual(usable_width(720, 1280), 720)    # Instagram reel download
 
-    def test_pass_fail_and_bot_check_is_unmeasured(self):
+    def test_tags_and_bot_check_is_unmeasured(self):
         yt = YtDlp(sleep=0, retries=1, runner=FakeYouTube(CHANNELS, SEARCH, bot_ids={"c1"}))
-        self.assertEqual(measure_channel(yt, "UC" + "A" * 22).status, PASS)
-        self.assertEqual(measure_channel(yt, "UC" + "B" * 22).status, FAIL)
+        ana = measure_channel(yt, "UC" + "A" * 22)
+        self.assertEqual((ana.status, ana.best["id"]), (SPEC, "a1"))                    # 4K long-form
+        self.assertEqual(measure_channel(yt, "UC" + "B" * 22).status, SPEC_CARD)        # 1080p landscape
+        self.assertEqual(measure_channel(yt, "UC" + "F" * 22).status, SPEC_FRAME)       # only the Short passes
+        self.assertEqual(measure_channel(yt, "UC" + "G" * 22).status, MOCKUP)           # 720p everywhere
         cara = measure_channel(yt, "UC" + "C" * 22)
         self.assertEqual(cara.status, UNMEASURED)
         self.assertEqual(cara.bot_checked, 1)
@@ -123,6 +130,36 @@ class FakeNotion:
         self.pages.append((title, lines))
 
 
+class FakeApify:
+    def __init__(self, emails, raise_spend=False):
+        self.emails, self.raise_spend, self.calls = emails, raise_spend, []
+
+    def run_actor(self, actor, run_input, max_items, price_per_item, label):
+        if self.raise_spend:
+            raise SpendNotApproved("needs --approve-spend")
+        self.calls.append(run_input["usernames"])
+        return [{"username": u, "publicEmail": self.emails[u]} for u in run_input["usernames"] if u in self.emails]
+
+
+class TestInstagramContacts(unittest.TestCase):
+    def _leads(self, n):
+        return [{"username": f"UC{i}", "ig_handle": f"coach{i}", "profile": {"full_name": "x", "external_urls": []},
+                 "contacts": {"emails": [], "phones": [], "best_email": None}} for i in range(n)]
+
+    def test_batches_by_contact_batch_size(self):
+        cfg = load_config()
+        api = FakeApify({"coach4": "c4@x.com"})
+        leads = self._leads(5)
+        hits = daily.from_instagram_contacts(leads, cfg, None, api)
+        self.assertEqual([len(c) for c in api.calls], [3, 2])
+        self.assertEqual(hits, 1)
+        self.assertEqual(leads[4]["contacts"]["emails"][0]["email"], "c4@x.com")
+
+    def test_unapproved_spend_is_skipped_not_fatal(self):
+        cfg = load_config()
+        self.assertEqual(daily.from_instagram_contacts(self._leads(2), cfg, None, FakeApify({}, raise_spend=True)), 0)
+
+
 class TestDailyRun(unittest.TestCase):
     def _run(self, dry):
         tmp = tempfile.TemporaryDirectory()
@@ -134,24 +171,33 @@ class TestDailyRun(unittest.TestCase):
         guard = BudgetGuard(Path(tmp.name) / "ledger.jsonl", cfg.settings["budget"])
         yt = YtDlp(sleep=0, retries=1, runner=FakeYouTube(CHANNELS, SEARCH, bot_ids={"c1"}))
         fn = FakeNotion()
-        about = lambda cid: {"links": [], "description": CHANNELS[cid].get("desc", ""), "instagram": None}
+        handles = {"F": "offercoachfay", "G": "lowresgil", "B": "funnelben"}
+        about = lambda cid: {"links": [], "description": CHANNELS[cid].get("desc", ""),
+                             "instagram": f"https://www.instagram.com/{handles[cid[2]]}/" if cid[2] in handles else None}
+        self.apify = FakeApify({"offercoachfay": "fay@offercoach.com"})
         import os
         os.environ.pop("ANTHROPIC_API_KEY", None)
         out = daily.run(cfg, guard, dry_run=dry, yt=yt, notion=fn, today=TODAY, about_fn=about,
-                        related_fn=lambda v: [], lookup_mx=lambda d: ["aspmx.l.google.com"])
+                        related_fn=lambda v: [], lookup_mx=lambda d: ["aspmx.l.google.com"],
+                        apify=self.apify)
         return out, fn
 
     def test_dry_run_buckets_and_writes_nothing(self):
         out, fn = self._run(dry=True)
         st = out["stats"]
         self.assertEqual(st["skipped_known"], 1)                     # Eve is already in Notion
-        self.assertEqual((st[PASS], st[FAIL], st[UNMEASURED]), (2, 1, 1))
-        self.assertEqual(st["dropped_free_checks"], 1)               # spiritual/soul/healing
-        self.assertEqual((st["spec"], st["mockup"]), (1, 1))         # Ana spec, Ben mockup
+        self.assertEqual((st[SPEC], st[SPEC_FRAME], st[SPEC_CARD], st[MOCKUP], st[UNMEASURED]), (3, 1, 1, 1, 1))
+        self.assertEqual(st["dropped_free_checks"], 2)               # spiritual/soul/healing + 477k subs
+        self.assertEqual(st["rows"], {SPEC: 1, SPEC_FRAME: 1, SPEC_CARD: 1, MOCKUP: 1})
+        lanes = [r["Lane"] for r in out["rows"]]
+        self.assertEqual(lanes, ["Spec edit", "Spec, check frame", "Spec, card layout", "Mockup"])
         ana = out["rows"][0]
-        self.assertEqual((ana["Name"], ana["Lane"], ana["Email"]), ("Sales Coach Ana", "Spec edit", "ana@anasales.com"))
-        self.assertIn("1215px usable from 3840x2160", ana["Notes"])
-        self.assertEqual(out["rows"][1]["Lane"], "Mockup")
+        self.assertEqual((ana["Name"], ana["Email"]), ("Sales Coach Ana", "ana@anasales.com"))
+        self.assertIn("1215px usable after 9:16 crop, measured 3840x2160 long-form youtu.be/a1", ana["Notes"])
+        fay = out["rows"][1]
+        self.assertEqual(fay["Email"], "fay@offercoach.com")         # from the Instagram contact Actor
+        self.assertIn("Email from apify_contact", fay["Notes"])
+        self.assertEqual([sorted(c) for c in self.apify.calls], [["funnelben", "lowresgil", "offercoachfay"]])  # one batch of 3
         self.assertEqual(fn.rows, [])
         self.assertEqual(fn.pages, [])
 

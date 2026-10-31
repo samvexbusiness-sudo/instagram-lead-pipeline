@@ -204,7 +204,7 @@ def cmd_demo(args):
 
 def cmd_source(args):
     from .sourcing import daily
-    from .sourcing.youtube import PASS, FAIL, UNMEASURED
+    from .sourcing.youtube import MOCKUP, SPEC, SPEC_CARD, SPEC_FRAME, UNMEASURED
 
     cfg, _store, guard = _ctx(args)
     dry = not args.write
@@ -212,10 +212,12 @@ def cmd_source(args):
     st, rows = out["stats"], out["rows"]
     print("\n=== Sourcing", "DRY RUN (nothing written)" if dry else "run", st["date"], "===")
     print(f"Channels scanned: {st['scanned']}  (new candidates {st['candidates']}, skipped as known {st['skipped_known']})")
-    print(f"Footage: PASS {st[PASS]} | FAIL {st[FAIL]} | UNMEASURED {st[UNMEASURED]}  (bot checks {st['bot_checks']})")
+    print(f"Footage: Spec edit {st[SPEC]} | Spec, check frame {st[SPEC_FRAME]} | Spec, card layout {st[SPEC_CARD]} "
+          f"| Mockup {st[MOCKUP]} | UNMEASURED {st[UNMEASURED]}  (bot checks {st['bot_checks']})")
     print(f"Free-check drops {st['dropped_free_checks']} | ICP checked {st['icp_checked']} | ICP pass {st['icp_pass']}"
           + (f" | ICP not run (no ANTHROPIC_API_KEY) {st['icp_pending']}" if st["icp_pending"] else ""))
-    print(f"Rows: spec {st['spec']} | mockup {st['mockup']} | with email {st['with_email']} | written {st['written']}")
+    print("Rows: " + " | ".join(f"{t} {n}" for t, n in st["rows"].items())
+          + f" | with email {st['with_email']} | written {st['written']}")
     print(f"Full report: {out['report']}")
     for r in rows[: 5 if dry else 0]:
         print("\n" + "\n".join(f"  {k}: {v}" for k, v in r.items() if v))

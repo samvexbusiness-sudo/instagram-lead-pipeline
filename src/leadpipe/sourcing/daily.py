@@ -1,12 +1,14 @@
 """Daily prospect sourcing, footage first.
 
   1. Find coach channels on YouTube (search queries + channels suggested next to winners).
-  2. Gate 0, footage: measure the newest long-forms and Short (metadata only).
-  3. ICP: free keyword/activity checks, then Claude's 7 checks.
-  4. Email: YouTube About/description, their website, then Hunter (credits). Any
-     published email counts, support@ and info@ included.
-  5. Notion: one row per survivor, Lane "Spec edit" (footage PASS) or "Mockup" (FAIL),
-     plus a daily summary page. Never emails or DMs anyone.
+  2. Gate 0, footage: measure the newest long-forms and Short (metadata only) and tag
+     the channel Spec edit / Spec, check frame / Spec, card layout / Mockup.
+  3. ICP: free checks (keywords, activity, subscriber cap), then Claude's 7 checks.
+  4. Email: YouTube About/description, their website, the Apify Instagram contact Actor
+     (anyone with an Instagram handle), then Hunter only with --hunter. Any published
+     email counts, support@ and info@ included.
+  5. Notion: one row per survivor with the tag as Lane, plus a daily summary page.
+     Never emails or DMs anyone.
 
 Notion is the lead store. `data/sourcing/seen.json` only remembers which channels were
 already scanned (and their verdict) so they aren't re-measured every day.
@@ -14,15 +16,16 @@ already scanned (and their verdict) so they aren't re-measured every day.
 from __future__ import annotations
 
 import json
-from datetime import date, datetime, timedelta
+from datetime import date
 from pathlib import Path
 
 from .. import contacts
-from ..budget import BudgetGuard
+from ..apify import ApifyClient, ApifyError
+from ..budget import BudgetGuard, SpendNotApproved
 from ..storage import GENERIC_LINK_DOMAINS, normalize_domain
 from . import icp
-from .notion import Notion, NotionError, build_properties, existing_keys, keys_from_text
-from .youtube import FAIL, PASS, UNMEASURED, BotCheck, YtDlp, channel_about, measure_channel, related_channels
+from .notion import Notion, NotionError, build_properties, existing_keys
+from .youtube import MOCKUP, SPEC, SPEC_CARD, SPEC_FRAME, TAGS, UNMEASURED, BotCheck, YtDlp, channel_about, measure_channel, related_channels
 
 SOCIAL = ("instagram.com", "youtube.com", "youtu.be", "tiktok.com", "facebook.com", "linkedin.com",
           "twitter.com", "x.com", "threads.net", "spotify.com", "podcasts.apple.com", "apple.co", "pinterest.")
@@ -60,7 +63,37 @@ def _lead_for_contacts(c: dict) -> dict:
             "contacts": {"emails": [], "phones": [], "best_email": None}}
 
 
-def find_emails(cands: list[dict], cfg, guard: BudgetGuard, use_hunter: bool, lookup_mx=None) -> None:
+def _ig_handle(url: str | None) -> str | None:
+    if not url:
+        return None
+    h = url.rstrip("/").split("instagram.com/")[-1].split("/")[0].split("?")[0].lower()
+    return h or None
+
+
+def from_instagram_contacts(leads: list[dict], cfg, guard: BudgetGuard, apify=None) -> int:
+    """Email behind the Instagram contact button, via the Apify contact Actor (paid,
+    budget-capped, batched by contact_batch_size). Skips quietly when not allowed."""
+    targets = [l for l in leads if not l["contacts"]["emails"] and l.get("ig_handle")]
+    if not targets:
+        return 0
+    if apify is None:
+        token = cfg.secret("APIFY_TOKEN")
+        if not token:
+            print("[sourcing] APIFY_TOKEN not set; skipping the Instagram contact step.")
+            return 0
+        apify = ApifyClient(token, guard, cfg.paths.raw, cfg.settings["apify"]["run_timeout_seconds"])
+    # contacts.from_apify_actor matches results by lead["username"], so use the IG handle.
+    ig_leads = [{"username": l["ig_handle"], "contacts": l["contacts"], "profile": l["profile"]} for l in targets]
+    try:
+        return contacts.from_apify_actor(ig_leads, apify, cfg.settings["apify"])
+    except SpendNotApproved as e:
+        print(f"[sourcing] Instagram contact step skipped: {e}")
+    except ApifyError as e:
+        print(f"[sourcing] Instagram contact step failed: {e}")
+    return 0
+
+
+def find_emails(cands: list[dict], cfg, guard: BudgetGuard, use_hunter: bool, lookup_mx=None, apify=None) -> None:
     s = cfg.settings["contacts"]
     leads = []
     for c in cands:
@@ -71,12 +104,20 @@ def find_emails(cands: list[dict], cfg, guard: BudgetGuard, use_hunter: bool, lo
         if not lead["contacts"]["emails"] and c["websites"] and s.get("fetch_websites", True):
             contacts.from_websites(lead, s["max_pages_per_lead"], s["request_timeout_seconds"])
         contacts._pick_best(lead)
+        lead["ig_handle"] = _ig_handle(c.get("instagram"))
         c["_lead"] = lead
         leads.append(lead)
+    if cfg.settings["sourcing"].get("instagram_contacts", True):
+        from_instagram_contacts(leads, cfg, guard, apify)
+        for lead in leads:
+            contacts._pick_best(lead)
     key = cfg.secret("HUNTER_API_KEY")
     if use_hunter and key:
-        contacts.from_hunter_finder(leads, key, guard)
-        contacts.from_hunter(leads, key, guard)
+        try:
+            contacts.from_hunter_finder(leads, key, guard)
+            contacts.from_hunter(leads, key, guard)
+        except SpendNotApproved as e:
+            print(f"[sourcing] Hunter skipped: {e}")
     elif use_hunter:
         print("[sourcing] HUNTER_API_KEY not set; skipping Hunter.")
     contacts.check_providers(leads, **({"lookup": lookup_mx} if lookup_mx else {}))
@@ -90,12 +131,13 @@ def find_emails(cands: list[dict], cfg, guard: BudgetGuard, use_hunter: bool, lo
 
 def notion_values(c: dict, s: dict, today: date) -> dict:
     v = c["footage"]["best"] or {}
-    spec = c["footage"]["status"] == PASS
+    tag = c["footage"]["status"]
+    lane = {SPEC: s["lane_spec"], SPEC_FRAME: s["lane_spec_frame"], SPEC_CARD: s["lane_spec_card"]}.get(tag, s["lane_mockup"])
     res = f'{v.get("width")}x{v.get("height")}' if v else "unmeasured"
     q = c.get("icp") or {}
     parts = [f"SOURCING {today.isoformat()} (YouTube, footage first)",
-             f"tag {'spec' if spec else 'mockup'}",
-             f"footage {c['footage']['status']} {v.get('usable', 0)}px usable from {res} {v.get('kind', '')} "
+             f"tag {lane}",
+             f"footage {tag}: {v.get('usable', 0)}px usable after 9:16 crop, measured {res} {v.get('kind', '')} "
              f"youtu.be/{v.get('id')} ({v.get('upload_date', '?')})" if v else "footage unmeasured",
              f"YouTube https://www.youtube.com/channel/{c['channel_id']}",
              f"{c.get('subscribers') or '?'} subs"]
@@ -111,17 +153,19 @@ def notion_values(c: dict, s: dict, today: date) -> dict:
         s["col_name"]: c["channel"],
         s["col_instagram"]: c.get("instagram"),
         s["col_email"]: c.get("email"),
-        s["col_lane"]: s["lane_spec"] if spec else s["lane_mockup"],
+        s["col_lane"]: lane,
         s["col_status"]: s["status_new"],
         s["col_asset"]: f"https://www.youtube.com/watch?v={v['id']}" if v else None,
-        s["col_next"]: ("Spec edit from the measured video" if spec else "Before/after mockup") + ", Sam reviews first",
+        s["col_next"]: {SPEC: "Spec edit from the measured video", SPEC_FRAME: "Spec edit, check a frame of the Short first",
+                        SPEC_CARD: "Spec edit in a card layout (1080p landscape)"}.get(tag, "Before/after mockup")
+                       + ", Sam reviews first",
         s["col_notes"]: " · ".join(parts),
     }
 
 
 def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = None, use_hunter: bool = False,
         yt: YtDlp | None = None, notion: Notion | None = None, today: date | None = None,
-        about_fn=channel_about, related_fn=related_channels, lookup_mx=None) -> dict:
+        about_fn=channel_about, related_fn=related_channels, lookup_mx=None, apify=None) -> dict:
     s = cfg.settings["sourcing"]
     today = today or date.today()
     yt = yt or YtDlp(sleep=s["sleep_seconds"], retries=s["bot_retries"],
@@ -129,8 +173,9 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     seen = Seen(cfg.paths.data / "sourcing" / "seen.json")
     max_channels = max_channels or s["max_channels_per_run"]
     stats = {"date": today.isoformat(), "searched_queries": 0, "candidates": 0, "skipped_known": 0,
-             "scanned": 0, PASS: 0, FAIL: 0, UNMEASURED: 0, "dropped_free_checks": 0, "icp_checked": 0,
-             "icp_pass": 0, "icp_pending": 0, "spec": 0, "mockup": 0, "with_email": 0, "written": 0, "bot_checks": 0}
+             "scanned": 0, **{t: 0 for t in TAGS}, UNMEASURED: 0, "dropped_free_checks": 0, "icp_checked": 0,
+             "icp_pass": 0, "icp_pending": 0, "rows": {t: 0 for t in TAGS}, "with_email": 0, "written": 0,
+             "bot_checks": 0}
 
     # ---- Notion: who do we already have? ----
     known: set[str] = set()
@@ -188,7 +233,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
         if fp.status == UNMEASURED:
             continue
         measured.append(c)
-        if fp.status == PASS and expanded < s["expand_from_winners"]:
+        if fp.status != MOCKUP and expanded < s["expand_from_winners"]:
             expanded += 1
             new = []
             try:
@@ -240,8 +285,15 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     by_id = {c["channel_id"]: c for c in measured}
     api_ready = cfg.secret("ANTHROPIC_API_KEY") is not None
     if api_ready:
-        verdicts = icp.judge(cards, cfg.icp_text, cfg.settings["claude"], guard, today)
-        stats["icp_checked"] = len(verdicts)
+        icp_settings = dict(cfg.settings["claude"], model=s.get("icp_model") or cfg.settings["claude"]["model"])
+        try:
+            verdicts = icp.judge(cards, cfg.icp_text, icp_settings, guard, today)
+            stats["icp_checked"] = len(verdicts)
+        except SpendNotApproved as e:
+            if not dry_run:
+                raise
+            print(f"[sourcing] ICP check skipped in dry run: {e}")
+            verdicts, api_ready = {}, False
     else:
         verdicts = {}
         if not dry_run:
@@ -268,12 +320,12 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     # ---- 4. email ----
     for c in survivors:
         c["hunter_tried"] = use_hunter
-    find_emails(survivors, cfg, guard, use_hunter, lookup_mx)
+    find_emails(survivors, cfg, guard, use_hunter, lookup_mx, apify)
 
     # ---- 5. rows ----
     rows = []
-    for c in sorted(survivors, key=lambda c: (c["footage"]["status"] != PASS, (c.get("icp") or {}).get("tier", "Z"))):
-        stats["spec" if c["footage"]["status"] == PASS else "mockup"] += 1
+    for c in sorted(survivors, key=lambda c: (TAGS.index(c["footage"]["status"]), (c.get("icp") or {}).get("tier", "Z"))):
+        stats["rows"][c["footage"]["status"]] += 1
         stats["with_email"] += bool(c.get("email"))
         rows.append(notion_values(c, s, today))
 
@@ -295,10 +347,12 @@ def summary_lines(stats: dict, rows: list[dict], s: dict) -> list[str]:
     st = stats
     lines = [
         f"Channels scanned: {st['scanned']} (new candidates {st['candidates']}, already known {st['skipped_known']})",
-        f"Footage: {st[PASS]} PASS, {st[FAIL]} FAIL, {st[UNMEASURED]} UNMEASURED (bot checks: {st['bot_checks']}, retried next run)",
+        f"Footage: {st[SPEC]} spec edit, {st[SPEC_FRAME]} spec check-frame, {st[SPEC_CARD]} spec card-layout, "
+        f"{st[MOCKUP]} mockup, {st[UNMEASURED]} unmeasured (bot checks: {st['bot_checks']}, retried next run)",
         f"Dropped by free checks: {st['dropped_free_checks']}. ICP checked by Claude: {st['icp_checked']}, passed: {st['icp_pass']}"
         + (f", not checked (no API key): {st['icp_pending']}" if st["icp_pending"] else ""),
-        f"New rows: {st['spec']} spec, {st['mockup']} mockup, {st['with_email']} with an email. Written to Notion: {st['written']}",
+        "New rows: " + ", ".join(f"{n} {t.lower()}" for t, n in st["rows"].items()) +
+        f". With an email: {st['with_email']}. Written to Notion: {st['written']}",
     ]
     for r in rows[:10]:
         lines.append(f"- {r[s['col_name']]} · {r[s['col_lane']]} · {r.get(s['col_email']) or 'no email'}")

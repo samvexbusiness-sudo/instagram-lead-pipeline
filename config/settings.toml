@@ -73,9 +73,14 @@ max_channels_per_run = 200    # footage checks per run, after skipping known cha
 long_form_n = 2               # newest long-form videos measured per channel
 shorts_n = 1                  # newest Short measured per channel
 min_usable_width = 900        # px across a 9:16 crop: min(width, height*9/16)
+# Footage tags (Lane in Notion): long-form >= 900 px usable = Spec edit; only a 1080x1920 Short
+# passes = Spec, check frame; 1080p landscape long-form (608 px) = Spec, card layout;
+# 720p or lower / reel-only = Mockup. A bot check is UNMEASURED and retried next run.
 sleep_seconds = 2.0           # pause between YouTube calls
 bot_retries = 3               # retries with backoff after "confirm you're not a bot"; then UNMEASURED
 cookies_from_browser = ""     # optional, e.g. "chrome", if YouTube keeps bot-checking the PC
+icp_model = "claude-haiku-5-5"  # the 7-check ICP screen is a yes/no checklist, the cheap model is enough
+instagram_contacts = true     # Apify contact Actor for survivors with an Instagram handle (paid, capped)
 recheck_days = 60             # re-measure a scanned channel after this many days (UNMEASURED: next run)
 expand_from_winners = 15      # footage PASS channels whose neighbours we also scan
 related_per_winner = 6        # suggested channels + similar-title search results per winner
@@ -93,5 +98,7 @@ col_asset = "Asset"
 col_next = "Next touch"
 col_notes = "Notes"
 lane_spec = "Spec edit"
+lane_spec_frame = "Spec, check frame"
+lane_spec_card = "Spec, card layout"
 lane_mockup = "Mockup"
 status_new = "Queued"

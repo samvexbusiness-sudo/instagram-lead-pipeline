@@ -4,7 +4,6 @@ judges the 7 checks against ICP_CRITERIA.md (word for word, same as qualify.py).
 from __future__ import annotations
 
 import json
-import re
 from datetime import date
 
 from ..budget import BudgetGuard, Estimate
@@ -49,10 +48,14 @@ clip_idea: one line on which recent video and moment would make the best 30-60 s
 
 
 def free_checks(card: dict, rules: dict, today: date) -> list[str]:
-    """Cheap reasons to drop before paying for Claude. Empty list = continue."""
+    """Cheap reasons to drop before any paid step. Empty list = continue.
+    Subscriber cap = max_followers in hard_filters.toml (same cap as Instagram followers)."""
     text = " ".join([card.get("channel") or "", card.get("description") or "",
                      " ".join(v.get("title") or "" for v in card.get("recent_videos", []))]).lower()
     reasons = []
+    subs, cap = card.get("subscribers"), rules.get("max_followers")
+    if subs and cap and subs > cap:
+        reasons.append(f"{subs:,} subscribers, over the {cap:,} cap")
     for kw in rules.get("exclude_any", []):
         if kw.lower() in text:
             reasons.append(f"excluded keyword: {kw.strip()}")

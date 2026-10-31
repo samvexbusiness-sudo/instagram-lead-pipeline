@@ -3,12 +3,14 @@
 Everything here reads metadata only (`yt-dlp -J --skip-download` and public pages).
 Nothing is downloaded or stored except the numbers.
 
-Footage gate (Gate 0): the best recent video must give at least `min_width` px of
-width after cropping to 9:16. Usable width = min(width, round(height * 9 / 16)):
-  1920x1080 landscape -> 608 (fail), 3840x2160 -> 1215 (pass),
-  1080x1920 Short -> 1080 (pass), 1080x1350 (4:5) -> 759 (fail).
-YouTube bot checks ("Sign in to confirm you're not a bot", HTTP 429) never count as
-a fail: the channel is UNMEASURED and gets retried on the next run.
+Footage gate (Gate 0) tags each channel by its best recent video. Usable width is what's
+left after a 9:16 crop at full height: min(width, round(height * 9 / 16)).
+  SPEC        long-form with usable width >= min_width (3840x2160 -> 1215)  -> "Spec edit"
+  SPEC_FRAME  only a vertical Short passes (1080x1920 -> 1080)            -> "Spec, check frame"
+  SPEC_CARD   1080p-or-better landscape long-form (1920x1080 -> 608)     -> "Spec, card layout"
+  MOCKUP      720p or lower, or nothing usable (reel-only)               -> "Mockup"
+YouTube bot checks ("Sign in to confirm you're not a bot", HTTP 429) are never a verdict:
+the channel is UNMEASURED and gets retried on the next run.
 """
 from __future__ import annotations
 
@@ -24,7 +26,8 @@ import requests
 BOT_MARKERS = ("sign in to confirm", "not a bot", "http error 429", "too many requests", "confirm your age")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
-PASS, FAIL, UNMEASURED = "PASS", "FAIL", "UNMEASURED"
+SPEC, SPEC_FRAME, SPEC_CARD, MOCKUP, UNMEASURED = "SPEC", "SPEC_FRAME", "SPEC_CARD", "MOCKUP", "UNMEASURED"
+TAGS = [SPEC, SPEC_FRAME, SPEC_CARD, MOCKUP]          # best first
 
 
 class BotCheck(Exception):
@@ -124,9 +127,19 @@ class Footage:
         return datetime.strptime(max(ds), "%Y%m%d").date() if ds else None
 
 
+def video_tag(v: dict, min_width: int = 900) -> str:
+    if v["kind"] == "long-form" and v["usable"] >= min_width:
+        return SPEC
+    if v["kind"] == "short" and v["usable"] >= min_width:
+        return SPEC_FRAME
+    if v["kind"] == "long-form" and v["width"] > v["height"] and v["height"] >= 1080:
+        return SPEC_CARD
+    return MOCKUP
+
+
 def measure_channel(yt: YtDlp, channel_id: str, long_n: int = 2, shorts_n: int = 1,
                     min_width: int = 900) -> Footage:
-    """Newest `long_n` long-form videos + newest `shorts_n` Short, best usable width wins."""
+    """Newest `long_n` long-form videos + newest `shorts_n` Short; the best tag wins."""
     fp = Footage(channel_id)
     ids: list[tuple[str, str]] = []
     for tab, n in (("videos", long_n), ("shorts", shorts_n)):
@@ -142,11 +155,12 @@ def measure_channel(yt: YtDlp, channel_id: str, long_n: int = 2, shorts_n: int =
             continue
         if v:
             v["kind"] = "short" if tab == "shorts" else "long-form"
+            v["tag"] = video_tag(v, min_width) if v["usable"] else None
             fp.videos.append(v)
-    measured = [v for v in fp.videos if v["usable"] > 0]
+    measured = [v for v in fp.videos if v["tag"]]
     if measured:
-        fp.best = max(measured, key=lambda v: v["usable"])
-        fp.status = PASS if fp.best["usable"] >= min_width else FAIL
+        fp.best = min(measured, key=lambda v: (TAGS.index(v["tag"]), -v["usable"]))
+        fp.status = fp.best["tag"]
     return fp
 
 
