@@ -202,6 +202,27 @@ def cmd_demo(args):
     print(f"\nDemo output is in {demo_dir.relative_to(root)}/ (safe to delete).")
 
 
+def cmd_source(args):
+    from .sourcing import daily
+    from .sourcing.youtube import PASS, FAIL, UNMEASURED
+
+    cfg, _store, guard = _ctx(args)
+    dry = not args.write
+    out = daily.run(cfg, guard, dry_run=dry, max_channels=args.max_channels or None, use_hunter=args.hunter)
+    st, rows = out["stats"], out["rows"]
+    print("\n=== Sourcing", "DRY RUN (nothing written)" if dry else "run", st["date"], "===")
+    print(f"Channels scanned: {st['scanned']}  (new candidates {st['candidates']}, skipped as known {st['skipped_known']})")
+    print(f"Footage: PASS {st[PASS]} | FAIL {st[FAIL]} | UNMEASURED {st[UNMEASURED]}  (bot checks {st['bot_checks']})")
+    print(f"Free-check drops {st['dropped_free_checks']} | ICP checked {st['icp_checked']} | ICP pass {st['icp_pass']}"
+          + (f" | ICP not run (no ANTHROPIC_API_KEY) {st['icp_pending']}" if st["icp_pending"] else ""))
+    print(f"Rows: spec {st['spec']} | mockup {st['mockup']} | with email {st['with_email']} | written {st['written']}")
+    print(f"Full report: {out['report']}")
+    for r in rows[: 5 if dry else 0]:
+        print("\n" + "\n".join(f"  {k}: {v}" for k, v in r.items() if v))
+    if dry:
+        print("\nNothing was written to Notion. If this looks right: python run.py source --write --approve-spend")
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="run.py", description="Instagram business-coach lead pipeline")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -245,6 +266,12 @@ def main(argv=None):
     sp.add_argument("--limit", type=int, default=0)
     sp.add_argument("--include-no-email", action="store_true")
 
+    sp = add("source", cmd_source, "daily footage-first sourcing from YouTube into Notion (dry run by default)")
+    sp.add_argument("--write", action="store_true", help="write rows + summary to Notion (default: dry run)")
+    sp.add_argument("--max-channels", type=int, default=0, help="cap footage checks this run")
+    sp.add_argument("--hunter", action="store_true", help="use Hunter credits for missing emails")
+    sp.add_argument("--approve-spend", action="store_true")
+
     args = p.parse_args(argv)
     try:
         args.fn(args)
@@ -253,4 +280,7 @@ def main(argv=None):
         sys.exit(2)
     except ApifyError as e:
         print(f"\nApify problem: {e}")
+        sys.exit(1)
+    except RuntimeError as e:  # missing API keys, Notion errors
+        print(f"\n{e}")
         sys.exit(1)

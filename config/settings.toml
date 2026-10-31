@@ -54,3 +54,44 @@ use_hunter = false             # set true (or pass --hunter) once HUNTER_API_KEY
 check_mail_provider = true     # free DNS lookup: drops dead domains, tags google/microsoft/etc.
 # Test 2026-10-30: the Apify contact Actor is the best email source. It returns the email
 # behind Instagram's contact button, which the search Actor doesn't. ~$0.005 per qualified lead.
+
+[sourcing]
+# Daily footage-first sourcing: `python run.py source`. Run from Sam's PC (YouTube
+# bot-checks cloud IPs). Reads metadata only, never downloads videos, never contacts anyone.
+queries = [
+  "how to get coaching clients 2026", "sales coach discovery call tips", "marketing for coaches content strategy",
+  "how to price your coaching offer", "LinkedIn for coaches get clients", "business coach lead magnet funnel",
+  "high ticket sales coach", "how to sign high ticket clients", "client acquisition for coaches",
+  "coaching business growth strategy", "how to scale a coaching business", "sales calls for coaches objection handling",
+  "content strategy for business coaches", "organic lead generation for coaches", "group coaching program launch",
+  "how to fill your coaching program", "consultant how to get clients", "B2B sales coach",
+  "email marketing for coaches", "instagram for coaches get clients", "webinar funnel for coaches",
+  "personal brand for business owners", "how to build an online course business", "leadership coach for founders",
+]
+per_query = 15                # search results per query (duplicates of the same channel collapse)
+max_channels_per_run = 200    # footage checks per run, after skipping known channels
+long_form_n = 2               # newest long-form videos measured per channel
+shorts_n = 1                  # newest Short measured per channel
+min_usable_width = 900        # px across a 9:16 crop: min(width, height*9/16)
+sleep_seconds = 2.0           # pause between YouTube calls
+bot_retries = 3               # retries with backoff after "confirm you're not a bot"; then UNMEASURED
+cookies_from_browser = ""     # optional, e.g. "chrome", if YouTube keeps bot-checking the PC
+recheck_days = 60             # re-measure a scanned channel after this many days (UNMEASURED: next run)
+expand_from_winners = 15      # footage PASS channels whose neighbours we also scan
+related_per_winner = 6        # suggested channels + similar-title search results per winner
+
+# Notion (the only lead store). Column names copied from Prospects; the job reads the live
+# schema and skips any column that doesn't exist.
+notion_prospects_ds = "fd2eff14-d997-41e2-96b6-e60da54f0613"
+notion_summary_parent = "403bfc8a6cbf8173b595de3bb6671dc9"   # Outreach HQ page
+col_name = "Name"
+col_instagram = "IG"
+col_email = "Email"
+col_lane = "Lane"
+col_status = "Status"
+col_asset = "Asset"
+col_next = "Next touch"
+col_notes = "Notes"
+lane_spec = "Spec edit"
+lane_mockup = "Mockup"
+status_new = "Queued"
