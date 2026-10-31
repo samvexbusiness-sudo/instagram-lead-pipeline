@@ -214,6 +214,7 @@ def cmd_source(args):
     print(f"Channels scanned: {st['scanned']}  (new candidates {st['candidates']}, skipped as known {st['skipped_known']})")
     print(f"Footage: Spec edit {st[SPEC]} | Spec, check frame {st[SPEC_FRAME]} | Spec, card layout {st[SPEC_CARD]} "
           f"| Mockup {st[MOCKUP]} | UNMEASURED {st[UNMEASURED]}  (bot checks {st['bot_checks']})")
+    print(f"Too big (over the subscriber cap, skipped before measuring) {st['too_big']}")
     print(f"Free-check drops {st['dropped_free_checks']} | ICP checked {st['icp_checked']} | ICP pass {st['icp_pass']}"
           + (f" | ICP not run (no API key or no --approve-spend) {st['icp_pending']}" if st["icp_pending"] else ""))
     print("Rows: " + " | ".join(f"{t} {n}" for t, n in st["rows"].items())

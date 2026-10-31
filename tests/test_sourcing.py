@@ -186,8 +186,8 @@ class TestDailyRun(unittest.TestCase):
         out, fn = self._run(dry=True)
         st = out["stats"]
         self.assertEqual(st["skipped_known"], 1)                     # Eve is already in Notion
-        self.assertEqual((st[SPEC], st[SPEC_FRAME], st[SPEC_CARD], st[MOCKUP], st[UNMEASURED]), (3, 1, 1, 1, 1))
-        self.assertEqual(st["dropped_free_checks"], 2)               # spiritual/soul/healing + 477k subs
+        self.assertEqual((st[SPEC], st[SPEC_FRAME], st[SPEC_CARD], st[MOCKUP], st[UNMEASURED], st["too_big"]), (2, 1, 1, 1, 1, 1))
+        self.assertEqual(st["dropped_free_checks"], 1)               # spiritual/soul/healing (477k is too_big)
         self.assertEqual(st["rows"], {SPEC: 1, SPEC_FRAME: 1, SPEC_CARD: 1, MOCKUP: 1})
         lanes = [r["Lane"] for r in out["rows"]]
         self.assertEqual(lanes, ["Spec edit", "Spec, check frame", "Spec, card layout", "Mockup"])
@@ -229,3 +229,10 @@ class TestSubscriberCap(unittest.TestCase):
         rules = {"max_followers": 150000}
         self.assertEqual(icp.free_checks(card, rules, TODAY), [])
         self.assertTrue(icp.free_checks(card, rules, TODAY, 40000))
+
+
+class TestTooBigEarly(unittest.TestCase):
+    def test_stops_after_first_video(self):
+        yt = YtDlp(sleep=0, retries=1, runner=FakeYouTube(CHANNELS, SEARCH))
+        fp = measure_channel(yt, "UC" + "H" * 22, max_subscribers=40000)
+        self.assertEqual((fp.too_big, len(fp.videos)), (477000, 1))

@@ -120,6 +120,7 @@ class Footage:
     best: dict | None = None          # the video that gave the best usable width
     videos: list = field(default_factory=list)
     bot_checked: int = 0
+    too_big: int = 0                  # subscriber count, when over the cap (measuring stopped)
 
     @property
     def last_upload(self) -> date | None:
@@ -138,8 +139,9 @@ def video_tag(v: dict, min_width: int = 900) -> str:
 
 
 def measure_channel(yt: YtDlp, channel_id: str, long_n: int = 2, shorts_n: int = 1,
-                    min_width: int = 900) -> Footage:
-    """Newest `long_n` long-form videos + newest `shorts_n` Short; the best tag wins."""
+                    min_width: int = 900, max_subscribers: int | None = None) -> Footage:
+    """Newest `long_n` long-form videos + newest `shorts_n` Short; the best tag wins.
+    Stops after the first video if the channel is over `max_subscribers` (fp.too_big)."""
     fp = Footage(channel_id)
     ids: list[tuple[str, str]] = []
     for tab, n in (("videos", long_n), ("shorts", shorts_n)):
@@ -157,6 +159,9 @@ def measure_channel(yt: YtDlp, channel_id: str, long_n: int = 2, shorts_n: int =
             v["kind"] = "short" if tab == "shorts" else "long-form"
             v["tag"] = video_tag(v, min_width) if v["usable"] else None
             fp.videos.append(v)
+            if max_subscribers and (v.get("subscribers") or 0) > max_subscribers:
+                fp.too_big = v["subscribers"]
+                return fp
     measured = [v for v in fp.videos if v["tag"]]
     if measured:
         fp.best = min(measured, key=lambda v: (TAGS.index(v["tag"]), -v["usable"]))

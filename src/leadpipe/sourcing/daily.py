@@ -173,7 +173,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     seen = Seen(cfg.paths.data / "sourcing" / "seen.json")
     max_channels = max_channels or s["max_channels_per_run"]
     stats = {"date": today.isoformat(), "searched_queries": 0, "candidates": 0, "skipped_known": 0,
-             "scanned": 0, **{t: 0 for t in TAGS}, UNMEASURED: 0, "dropped_free_checks": 0, "icp_checked": 0,
+             "scanned": 0, **{t: 0 for t in TAGS}, UNMEASURED: 0, "dropped_free_checks": 0, "too_big": 0, "icp_checked": 0,
              "icp_pass": 0, "icp_pending": 0, "rows": {t: 0 for t in TAGS}, "with_email": 0, "written": 0,
              "bot_checks": 0}
 
@@ -219,8 +219,15 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
     while order and stats["scanned"] < max_channels:
         cid = order.pop(0)
         c = cands[cid]
-        fp = measure_channel(yt, cid, s["long_form_n"], s["shorts_n"], s["min_usable_width"])
+        fp = measure_channel(yt, cid, s["long_form_n"], s["shorts_n"], s["min_usable_width"],
+                             s.get("max_subscribers"))
         stats["scanned"] += 1
+        if fp.too_big:
+            name = (fp.videos[0].get("channel") if fp.videos else None) or c["channel"]
+            stats["too_big"] += 1
+            seen.mark(cid, "TOO_BIG", name, today)
+            print(f"[too big]  {fp.too_big:>9,} subs  {name}")
+            continue
         stats[fp.status] += 1
         stats["bot_checks"] += fp.bot_checked
         c["footage"] = {"status": fp.status, "best": fp.best, "videos": fp.videos}
