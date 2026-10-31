@@ -323,6 +323,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
             c["icp"] = v
             survivors.append(c)
         else:
+            c["drop"] = "ICP: " + "; ".join([k for k, ok in v.get("checks", {}).items() if not ok]
+                                            + v.get("reasons", [])[:2])
             seen.mark(c["channel_id"], "ICP_FAIL", c["channel"], today)
     if not dry_run:  # a dry run must not hide channels from the real run
         seen.save()

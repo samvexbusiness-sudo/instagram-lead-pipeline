@@ -39,7 +39,13 @@ Run these 7 checks, each true/false, from the data given (say so in reasons when
 5 english: content is in English
 6 talking_head: the coach talks to camera (solo, podcast or interview), not slides/screen-only/b-roll
 7 active_30_days: posted within the last 30 days (today's date is given)
-qualified = all 7 true. Tier A = all clearly true, B = all true with one soft spot, C = otherwise.
+YouTube data is thin (no Instagram bio, no funnel pages), so: mark a check FALSE only when the data
+shows it is false (e.g. a team/brand channel, mindset or spiritual topics, a software company, no
+upload in 30 days). When the data simply doesn't show it, mark it TRUE and say so in reasons.
+Footage was already measured, so talking_head is true unless titles/description show slides,
+screen recordings or b-roll only. A course, coaching program, community or "book a call" mention
+counts as an offer; a coach who teaches business topics on camera very likely has one.
+qualified = all 7 true. Tier A = all clearly shown, B = true but partly assumed, C = otherwise.
 offer: one line naming their offer if visible, else "not visible".
 clip_idea: one line on which recent video and moment would make the best 30-60 s reel.
 
