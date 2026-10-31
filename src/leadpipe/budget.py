@@ -10,6 +10,7 @@ is appended to data/spend_ledger.jsonl so the caps track real money.
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,18 +35,39 @@ class BudgetGuard:
         self.approved = approved
 
     # ---------- ledger ----------
-    def _entries(self) -> list[dict]:
+    def _entries(self) -> list[tuple[int, dict]]:
+        """Parsed ledger lines. Lines that aren't valid JSON objects are skipped with a warning."""
         if not self.ledger_path.exists():
             return []
-        return [json.loads(l) for l in self.ledger_path.read_text().splitlines() if l.strip()]
+        entries = []
+        for n, line in enumerate(self.ledger_path.read_text().splitlines(), 1):
+            if not line.strip():
+                continue
+            try:
+                e = json.loads(line)
+            except json.JSONDecodeError:
+                print(f"[budget] warning: skipping ledger line {n} (not valid JSON)", file=sys.stderr)
+                continue
+            if not isinstance(e, dict):
+                print(f"[budget] warning: skipping ledger line {n} (not a JSON object)", file=sys.stderr)
+                continue
+            entries.append((n, e))
+        return entries
 
     def spent(self, service: str, period: str) -> float:
         now = datetime.now(timezone.utc)
         prefix = now.strftime("%Y-%m-%d") if period == "day" else now.strftime("%Y-%m")
-        return sum(
-            e["amount"] for e in self._entries()
-            if e["service"] == service and e["at"].startswith(prefix)
-        )
+        total = 0.0
+        for n, e in self._entries():
+            if e.get("service") != service or not str(e.get("at", "")).startswith(prefix):
+                continue
+            # "usd" is a legacy key from hand-written lines; "amount" is what record() writes.
+            amount = e.get("amount", e.get("usd"))
+            try:
+                total += float(amount)
+            except (TypeError, ValueError):
+                print(f"[budget] warning: skipping ledger line {n} (no usable 'amount' or 'usd')", file=sys.stderr)
+        return total
 
     def record(self, service: str, amount: float, description: str, unit: str = "usd", meta: dict | None = None) -> None:
         self.ledger_path.parent.mkdir(parents=True, exist_ok=True)

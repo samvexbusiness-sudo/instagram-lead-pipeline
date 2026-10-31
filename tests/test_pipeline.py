@@ -1,8 +1,11 @@
 """Offline tests. Run: python -m unittest discover tests"""
+import contextlib
+import io
 import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -150,6 +153,21 @@ class TestBudget(unittest.TestCase):
             g.record("apify", 1.0, "earlier run")
             with self.assertRaises(SpendNotApproved):
                 g.authorize(Estimate("apify", "x", 0.9))
+
+    def test_spent_tolerates_legacy_and_garbage_lines(self):
+        with tempfile.TemporaryDirectory() as d:
+            g = self._guard(d, True)
+            g.record("apify", 0.25, "normal run")
+            now = datetime.now(timezone.utc).isoformat()
+            with open(g.ledger_path, "a") as f:
+                f.write(json.dumps({"at": now, "service": "apify", "usd": 0.5}) + "\n")
+                f.write("this is not json {\n")
+                f.write(json.dumps({"at": now, "service": "apify", "note": "no amount"}) + "\n")
+            with contextlib.redirect_stderr(io.StringIO()) as err:
+                self.assertAlmostEqual(g.spent("apify", "day"), 0.75)
+                self.assertAlmostEqual(g.spent("apify", "month"), 0.75)
+            self.assertIn("line 3", err.getvalue())
+            self.assertIn("line 4", err.getvalue())
 
 
 class TestQualifyManual(unittest.TestCase):
