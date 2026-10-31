@@ -164,6 +164,7 @@ class TestDailyRun(unittest.TestCase):
     def _run(self, dry):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
+        self.tmp = tmp.name
         cfg = load_config(data_dir=Path(tmp.name))
         cfg.settings["sourcing"] |= {"queries": ["coach q"], "per_query": 10, "sleep_seconds": 0, "bot_retries": 1,
                                      "expand_from_winners": 0}
@@ -199,6 +200,7 @@ class TestDailyRun(unittest.TestCase):
         self.assertIn("Email from apify_contact", fay["Notes"])
         self.assertEqual([sorted(c) for c in self.apify.calls], [["funnelben", "lowresgil", "offercoachfay"]])  # one batch of 3
         self.assertEqual(fn.rows, [])
+        self.assertFalse((Path(self.tmp) / "sourcing" / "seen.json").exists())
         self.assertEqual(fn.pages, [])
 
     def test_write_needs_api_key_for_icp(self):

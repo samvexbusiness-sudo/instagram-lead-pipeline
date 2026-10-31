@@ -258,7 +258,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
                 add(x, name, src)
                 if len(cands) > before:
                     order.append(x)
-    seen.save()
+    if not dry_run:  # a dry run must not hide channels from the real run
+        seen.save()
 
     # ---- 3. ICP ----
     cards = []
@@ -323,7 +324,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
             survivors.append(c)
         else:
             seen.mark(c["channel_id"], "ICP_FAIL", c["channel"], today)
-    seen.save()
+    if not dry_run:  # a dry run must not hide channels from the real run
+        seen.save()
 
     # ---- 4. email ----
     for c in survivors:
