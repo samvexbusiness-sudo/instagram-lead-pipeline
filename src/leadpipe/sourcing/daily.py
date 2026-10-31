@@ -275,7 +275,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, max_channels: int | None = No
                 "last_upload": c["last_upload"],
                 "recent_videos": [{k: v.get(k) for k in ("title", "upload_date", "duration", "kind")} |
                                   {"resolution": f"{v['width']}x{v['height']}"} for v in c["footage"]["videos"]]}
-        why = icp.free_checks(card, cfg.hard_filters, today)
+        why = icp.free_checks(card, cfg.hard_filters, today, s.get("max_subscribers"))
         if why:
             stats["dropped_free_checks"] += 1
             c["drop"] = "; ".join(why)

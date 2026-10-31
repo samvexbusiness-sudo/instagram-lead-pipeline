@@ -8,7 +8,7 @@
    - **Spec, card layout:** 1080p landscape long-form (1920×1080 → 608).
    - **Mockup:** 720p or lower, or reel-only.
    - A YouTube bot check is never a verdict. The channel is UNMEASURED and tried again the next day.
-3. **ICP:** free checks first (excluded keywords, no upload in 30 days, over 150,000 subscribers), then Claude Haiku runs the 7 checks against `config/icp/ICP_CRITERIA.md`.
+3. **ICP:** free checks first (excluded keywords, no upload in 30 days, over 40,000 subscribers, `max_subscribers`), then Claude Haiku runs the 7 checks against `config/icp/ICP_CRITERIA.md`.
 4. **Email:** YouTube About page and description, then their website, then the Apify Instagram contact Actor for anyone with an Instagram handle (batched 3 at a time, inside the Apify caps), then Hunter (only with `--hunter`). Any published email counts, support@ and info@ included.
 5. **Notion Prospects:** one row per survivor, written with:
    - The footage tag as the Lane. Notion creates the two new Lane options, "Spec, check frame" and "Spec, card layout", the first time they're written.

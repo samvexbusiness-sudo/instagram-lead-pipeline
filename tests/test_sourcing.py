@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from leadpipe.budget import BudgetGuard, SpendNotApproved  # noqa: E402
 from leadpipe.config import load_config  # noqa: E402
-from leadpipe.sourcing import daily, notion  # noqa: E402
+from leadpipe.sourcing import daily, icp, notion  # noqa: E402
 from leadpipe.sourcing.youtube import (MOCKUP, SPEC, SPEC_CARD, SPEC_FRAME, UNMEASURED, BotCheck, YtDlp,  # noqa: E402
                                        measure_channel, usable_width)
 
@@ -221,3 +221,11 @@ class TestNameKey(unittest.TestCase):
             p = Path(d) / "r.json"
             p.write_text(json.dumps({"n": "Salesman․com"}, ensure_ascii=False), encoding="utf-8")
             self.assertIn("․", p.read_text(encoding="utf-8"))
+
+
+class TestSubscriberCap(unittest.TestCase):
+    def test_sourcing_cap_overrides_instagram_cap(self):
+        card = {"channel": "x", "description": "", "recent_videos": [], "subscribers": 45000}
+        rules = {"max_followers": 150000}
+        self.assertEqual(icp.free_checks(card, rules, TODAY), [])
+        self.assertTrue(icp.free_checks(card, rules, TODAY, 40000))

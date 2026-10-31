@@ -47,13 +47,13 @@ clip_idea: one line on which recent video and moment would make the best 30-60 s
 """
 
 
-def free_checks(card: dict, rules: dict, today: date) -> list[str]:
+def free_checks(card: dict, rules: dict, today: date, max_subscribers: int | None = None) -> list[str]:
     """Cheap reasons to drop before any paid step. Empty list = continue.
-    Subscriber cap = max_followers in hard_filters.toml (same cap as Instagram followers)."""
+    Subscriber cap = [sourcing] max_subscribers (falls back to max_followers in hard_filters.toml)."""
     text = " ".join([card.get("channel") or "", card.get("description") or "",
                      " ".join(v.get("title") or "" for v in card.get("recent_videos", []))]).lower()
     reasons = []
-    subs, cap = card.get("subscribers"), rules.get("max_followers")
+    subs, cap = card.get("subscribers"), max_subscribers or rules.get("max_followers")
     if subs and cap and subs > cap:
         reasons.append(f"{subs:,} subscribers, over the {cap:,} cap")
     for kw in rules.get("exclude_any", []):
