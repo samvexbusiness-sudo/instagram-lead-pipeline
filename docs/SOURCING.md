@@ -20,31 +20,23 @@ It never emails or DMs anyone. It skips anyone already in Notion, matched by You
 
 ## One-time setup on the PC
 
-```bash
-git clone https://github.com/samvexbusiness-sudo/instagram-lead-pipeline
-```
+Fastest: download `scripts/setup_pc.ps1` (or run it from inside the repo) and run:
 
 ```bash
-cd instagram-lead-pipeline
+powershell -ExecutionPolicy Bypass -File setup_pc.ps1
 ```
 
-```bash
-git checkout claude/tender-ritchie-1yitvw
-```
+It clones or updates the repo on the right branch, installs `yt-dlp requests anthropic`, creates `.env` from `.env.example`, and runs the offline tests. Then:
 
-```bash
-pip install -U yt-dlp requests anthropic
-```
+1. Open `.env` and paste your keys:
+   - `NOTION_TOKEN`: Notion → Settings → Connections → Develop or manage integrations → New internal integration.
+   - `ANTHROPIC_API_KEY`: console.anthropic.com → API keys.
+   - `APIFY_TOKEN`: Apify → Settings → API & Integrations.
+   - `HUNTER_API_KEY`: optional.
+   The file is gitignored, so never commit it.
+2. In Notion, open **Outreach HQ** → ••• → **Connections** → add the integration, so it can read and write Prospects and add summary pages.
 
-Create a file called `.env` in the repo folder (it is gitignored, never commit it):
-
-```
-NOTION_TOKEN=secret_...        # Notion → Settings → Connections → Develop or manage integrations → New internal integration
-ANTHROPIC_API_KEY=sk-ant-...   # console.anthropic.com → API keys
-HUNTER_API_KEY=...             # optional
-```
-
-In Notion, open **Outreach HQ** → ••• → **Connections** → add the integration, so it can read and write Prospects and add summary pages.
+Manual alternative: `git clone https://github.com/samvexbusiness-sudo/instagram-lead-pipeline`, `git checkout claude/tender-ritchie-1yitvw`, `pip install -U yt-dlp requests anthropic`, then copy `.env.example` to `.env`.
 
 ## Dry run (writes nothing)
 
