@@ -270,3 +270,10 @@ class TestEmailBackfill(unittest.TestCase):
         self.assertEqual((out["checked"], out["found"]), (1, 1))
         self.assertEqual(n.updates[0][0], "p1")
         self.assertEqual(n.updates[0][1]["Email"], {"email": "hello@anacoach.com"})
+
+
+class TestAffiliateLinks(unittest.TestCase):
+    def test_affiliate_links_are_not_the_coach_site(self):
+        links = ["higherlevels.com/cold-call-mastery?via=connor-techsales", "skool.com/x/about?ref=abc",
+                 "partner.com/go/connor", "connorsales.com", "connorsales.com/book?utm_source=yt"]
+        self.assertEqual(daily._website(links), ["https://connorsales.com", "https://connorsales.com/book?utm_source=yt"])

@@ -16,6 +16,7 @@ already scanned (and their verdict) so they aren't re-measured every day.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from pathlib import Path
 
@@ -52,9 +53,14 @@ class Seen:
         self.path.write_text(json.dumps(self.d, indent=1), encoding="utf-8")
 
 
+# Referral links point at someone else's business (e.g. higherlevels.com/...?via=connor-techsales),
+# so an email found there belongs to that company, not the coach.
+AFFILIATE_RE = re.compile(r"[?&](via|ref|aff|affiliate|fpr|am_id|referral|partner|sca_ref)=|/(ref|aff|go|refer)/", re.I)
+
+
 def _website(links: list[str]) -> list[str]:
     return [("https://" + l) if "://" not in l else l for l in links
-            if not any(s in l.lower() for s in SOCIAL)]
+            if not any(s in l.lower() for s in SOCIAL) and not AFFILIATE_RE.search(l)]
 
 
 def _lead_for_contacts(c: dict) -> dict:
