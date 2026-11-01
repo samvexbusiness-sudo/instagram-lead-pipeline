@@ -238,3 +238,35 @@ class TestTooBigEarly(unittest.TestCase):
         yt = YtDlp(sleep=0, retries=1, runner=FakeYouTube(CHANNELS, SEARCH))
         fp = measure_channel(yt, "UC" + "H" * 22, max_subscribers=40000)
         self.assertEqual((fp.too_big, len(fp.videos)), (477000, 1))
+
+
+class TestEmailBackfill(unittest.TestCase):
+    def test_finds_and_writes_back(self):
+        from leadpipe.sourcing import backfill
+
+        class N:
+            updates = []
+            def schema(self, ds): return {"Name": "title", "Email": "email", "Notes": "rich_text", "IG": "url"}
+            def all_rows(self, ds):
+                note = lambda t: {"type": "rich_text", "rich_text": [{"plain_text": t}]}
+                return [
+                    {"id": "p1", "properties": {"Name": {"type": "title", "title": [{"plain_text": "Ana Coach"}]},
+                     "Email": {"type": "email", "email": None},
+                     "Notes": note("SOURCING · YouTube https://www.youtube.com/channel/UC" + "A" * 22)}},
+                    {"id": "p2", "properties": {"Name": {"type": "title", "title": [{"plain_text": "Has Mail"}]},
+                     "Email": {"type": "email", "email": "x@y.com"}, "Notes": note("youtube.com/channel/UC" + "B" * 22)}},
+                    {"id": "p3", "properties": {"Name": {"type": "title", "title": [{"plain_text": "Old IG lead"}]},
+                     "Email": {"type": "email", "email": None}, "Notes": note("PIPELINE 30 Oct")}}]
+            def update_row(self, pid, props): self.updates.append((pid, props))
+
+        with tempfile.TemporaryDirectory() as d:
+            cfg = load_config(data_dir=Path(d))
+            cfg.settings["contacts"]["fetch_websites"] = False
+            n = N()
+            about = lambda cid: {"links": [], "description": "contact: hello@anacoach.com", "instagram": None}
+            out = backfill.run(cfg, BudgetGuard(Path(d) / "l", cfg.settings["budget"]), dry_run=False, use_hunter=False,
+                               use_apify=False, all_empty=False, limit=0, notion=n, about_fn=about,
+                               lookup_mx=lambda dom: ["aspmx.l.google.com"])
+        self.assertEqual((out["checked"], out["found"]), (1, 1))
+        self.assertEqual(n.updates[0][0], "p1")
+        self.assertEqual(n.updates[0][1]["Email"], {"email": "hello@anacoach.com"})

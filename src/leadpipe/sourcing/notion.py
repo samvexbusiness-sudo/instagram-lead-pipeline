@@ -50,6 +50,9 @@ class Notion:
         return self._call("POST", "/pages", {"parent": {"type": "data_source_id", "data_source_id": data_source_id},
                                              "properties": properties})
 
+    def update_row(self, page_id: str, properties: dict) -> dict:
+        return self._call("PATCH", f"/pages/{page_id}", {"properties": properties})
+
     def create_page(self, parent_page_id: str, title: str, lines: list[str]) -> dict:
         blocks = [{"object": "block", "type": "paragraph",
                    "paragraph": {"rich_text": [{"type": "text", "text": {"content": l[:1900]}}]}} for l in lines]

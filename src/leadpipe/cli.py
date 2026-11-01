@@ -226,6 +226,17 @@ def cmd_source(args):
         print("\nNothing was written to Notion. If this looks right: python run.py source --write --approve-spend")
 
 
+def cmd_emails(args):
+    from .sourcing import backfill
+
+    cfg, _store, guard = _ctx(args)
+    out = backfill.run(cfg, guard, dry_run=not args.write, use_hunter=args.hunter, use_apify=args.apify_contacts,
+                       all_empty=args.all_empty, limit=args.limit)
+    print(f"\nChecked {out['checked']} | emails found {out['found']} | written to Notion {out['written']}")
+    if not args.write and out["found"]:
+        print("Nothing written yet. To save them: add --write")
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="run.py", description="Instagram business-coach lead pipeline")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -273,6 +284,14 @@ def main(argv=None):
     sp.add_argument("--write", action="store_true", help="write rows + summary to Notion (default: dry run)")
     sp.add_argument("--max-channels", type=int, default=0, help="cap footage checks this run")
     sp.add_argument("--hunter", action="store_true", help="use Hunter credits for missing emails")
+    sp.add_argument("--approve-spend", action="store_true")
+
+    sp = add("emails", cmd_emails, "find emails for Notion prospects that have none (preview by default)")
+    sp.add_argument("--write", action="store_true", help="save found emails into Notion")
+    sp.add_argument("--hunter", action="store_true", help="use Hunter credits")
+    sp.add_argument("--apify-contacts", action="store_true", help="also try the Instagram contact Actor (paid)")
+    sp.add_argument("--all-empty", action="store_true", help="any row without an email, not just YouTube-sourced ones")
+    sp.add_argument("--limit", type=int, default=0)
     sp.add_argument("--approve-spend", action="store_true")
 
     args = p.parse_args(argv)
