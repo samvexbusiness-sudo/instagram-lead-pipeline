@@ -177,8 +177,15 @@ SUBS_RE = re.compile(r"([\d.,]+[KMB]?) subscribers")
 BROWSE_RE = re.compile(r'"browseId":"(UC[\w-]{22})"')
 
 
+# EU visitors get redirected to consent.youtube.com without these (Sam's PC is in Slovakia).
+CONSENT_COOKIES = {"SOCS": "CAESEwgDEgk0ODE3Nzk3MjQaAmVuIAEaBgiA_LyaBg", "CONSENT": "YES+cb"}
+
+
 def _get_page(url: str, timeout: int = 20, get=requests.get) -> str:
-    r = get(url, headers={"User-Agent": UA, "Accept-Language": "en"}, timeout=timeout)
+    try:
+        r = get(url, headers={"User-Agent": UA, "Accept-Language": "en"}, cookies=CONSENT_COOKIES, timeout=timeout)
+    except TypeError:  # test doubles without a cookies argument
+        r = get(url, headers={"User-Agent": UA, "Accept-Language": "en"}, timeout=timeout)
     if r.status_code == 429 or "consent.youtube.com" in getattr(r, "url", ""):
         raise BotCheck(url)
     r.raise_for_status()

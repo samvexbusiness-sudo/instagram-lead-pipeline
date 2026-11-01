@@ -49,7 +49,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, use_hunter: bool, use_apify: 
                 c["about_text"] = about.get("description", "")
                 c["instagram"] = c["instagram"] or about.get("instagram")
             except Exception as e:  # one bad page must not stop the rest
-                print(f"[emails] {c['channel']}: couldn't read YouTube About ({e})")
+                print(f"[emails] {c['channel']}: couldn't read YouTube About ({type(e).__name__}: {e})")
         print(f"[emails] {c['channel']}: site {c['websites'][:1] or 'none'}, IG {c['instagram'] or 'none'}")
 
     saved = cfg.settings["sourcing"].get("instagram_contacts", True)
