@@ -322,3 +322,14 @@ class TestBroadLane(unittest.TestCase):
         self.assertEqual((st["lookalikes"], st["after_name_screen"], st["icp_pass"], st["written"]), (3, 1, 1, 1))
         self.assertEqual(n.created[0]["Email"], {"email": "sue@suesales.com"})
         self.assertEqual(n.created[0]["Lane"], {"select": {"name": "Mockup"}})
+
+
+class TestEmailIsTheirs(unittest.TestCase):
+    def test_foreign_gmail_from_website_dropped(self):
+        from leadpipe.sourcing.instagram_broad import _email_is_theirs
+        mk = lambda e, src, name, user: {"username": user, "profile": {"full_name": name},
+                                         "contacts": {"best_email": e, "emails": [{"email": e, "source": src}]}}
+        self.assertFalse(_email_is_theirs(mk("themadisonhatten@gmail.com", "website", "Shan | Coach", "bossdivas")))
+        self.assertTrue(_email_is_theirs(mk("shan.coach@gmail.com", "website", "Shan Smith", "bossdivas")))
+        self.assertTrue(_email_is_theirs(mk("help@marcaccetta.com", "website", "Marc", "marc")))
+        self.assertTrue(_email_is_theirs(mk("naijasales@gmail.com", "apify_contact", "Habeebah", "naija")))

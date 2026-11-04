@@ -34,7 +34,7 @@ BROAD_ICP = """BROAD ICP (volume lane, mockup only). Pass when ALL of these hold
 - Shows some offer or funnel (link in bio, DM/comment keyword, call booking, waitlist, course).
 - English content, posted in the last 30 days.
 Fail only for: fitness/nutrition/health/therapy/spiritual/manifesting/relationships, crypto or
-trading signals, real estate agents, software companies, video/content/social media agencies or
+trading signals, network marketing/MLM, real estate agents, software companies, video/content/social media agencies or
 editors (competitors), faceless/meme/quote pages, or brands with no person on camera.
 Tier A = clear fit for the strict ICP below as well; Tier B = fits the broad lane only.
 """
@@ -101,6 +101,23 @@ def _judge(cards: list[dict], strict_icp: str, s: dict, guard: BudgetGuard) -> d
             continue
         out[card["username"]] = v
     return out
+
+
+FREEMAIL = {"gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com", "aol.com", "proton.me", "protonmail.com"}
+
+
+def _email_is_theirs(lead: dict) -> bool:
+    """A free-mail address scraped off a website must share a name part with the account
+    (4 Nov: Shan's row got themadisonhatten@gmail.com from someone else's page). Addresses on
+    their own domain, or given by Instagram itself, are trusted."""
+    c = lead["contacts"]
+    e = c["best_email"]
+    src = next((x["source"] for x in c["emails"] if x["email"] == e), "")
+    local, dom = e.split("@")
+    if dom not in FREEMAIL or src in ("instagram", "apify_contact"):
+        return True
+    words = re.findall(r"[a-z]{4,}", ((lead["profile"].get("full_name") or "") + " " + lead["username"]).lower())
+    return any(w in local.lower() for w in words)
 
 
 def _best_reel(p: dict) -> str | None:
@@ -189,7 +206,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
     except SpendNotApproved as e:
         print(f"[broad] Instagram contact step skipped: {e}")
     contacts.check_providers(leads, **({"lookup": lookup_mx} if lookup_mx else {}))
-    leads = [l for l in leads if l["contacts"]["best_email"] and f"email:{l['contacts']['best_email']}" not in known]
+    leads = [l for l in leads if l["contacts"]["best_email"] and f"email:{l['contacts']['best_email']}" not in known
+             and _email_is_theirs(l)]
     stats["with_email"] = len(leads)
 
     # 6. Notion rows, tier A first, capped at the target

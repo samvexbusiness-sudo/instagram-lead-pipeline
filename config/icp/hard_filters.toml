@@ -34,6 +34,7 @@ exclude_any = [
   "therapist", "psychologist", "life coach", "wellbeing", "wellness",
   "marketing agency", "digital marketing agency", "social media management", "social media marketing agency",
   "agency ®", "we are a team", "real estate", "realtor", "mortgage",
+  "network marketing", "mlm", "direct sales", "team leader at", "affiliate marketing",
 ]
 
 exclude_categories = ["Video Creator", "Gamer", "Musician/Band", "Artist", "Software Company"]

@@ -143,4 +143,4 @@ keywords = [
   "coach for agency owners", "coach for photographers business", "coach for wedding planners business",
   "coach for interior designers business", "coach for virtual assistants", "coach for online fitness coaches business",
 ]
-max_followers = 150000     # looser than the strict lane; size is not a money signal (Sam 30 Oct)
+max_followers = 40000      # same cap as YouTube (Sam 31 Oct): bigger accounts don't answer cold email
