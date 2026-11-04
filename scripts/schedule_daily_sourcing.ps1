@@ -8,7 +8,8 @@
 
 param(
   [string]$Time = "10:17",          # local time; off the hour on purpose
-  [switch]$Hunter                    # add -Hunter to let it spend Hunter credits (cap in settings.toml)
+  [switch]$Hunter,                   # add -Hunter to let it spend Hunter credits (cap in settings.toml)
+  [switch]$Broad                     # add -Broad to also run the Tier B volume lane (about 20-25 mockup leads/day)
 )
 
 $repo = (Resolve-Path "$PSScriptRoot\..").Path
@@ -18,6 +19,7 @@ New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
 $hunterFlag = if ($Hunter) { " --hunter" } else { "" }
 $cmd = "cd /d `"$repo`" && `"$python`" run.py source --write --approve-spend$hunterFlag >> `"$logDir\sourcing.log`" 2>&1"
+if ($Broad) { $cmd += " & `"$python`" run.py broad --write --approve-spend >> `"$logDir\broad.log`" 2>&1" }
 
 $action  = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c $cmd"
 $trigger = New-ScheduledTaskTrigger -Daily -At $Time

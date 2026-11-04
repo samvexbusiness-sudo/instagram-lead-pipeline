@@ -103,3 +103,11 @@ lane_spec_frame = "Spec - check frame"   # Notion select options can't contain c
 lane_spec_card = "Spec - card layout"
 lane_mockup = "Mockup"
 status_new = "Queued"
+
+[broad]
+# Tier B volume lane: `python run.py broad`. ~20 mockups/day is Sam's automated capacity and
+# about what one Gmail can send safely, so the target is a little above it for bounces.
+daily_target = 25          # Notion rows with an email per run (stops there)
+seeds_per_run = 12         # Notion IG handles whose "related profiles" are scraped (rotated, 30-day cooldown)
+max_profiles_per_run = 120 # lookalikes scraped after the free name screen (~$0.0026 each)
+max_followers = 150000     # looser than the strict lane; size is not a money signal (Sam 30 Oct)

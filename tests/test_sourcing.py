@@ -277,3 +277,52 @@ class TestAffiliateLinks(unittest.TestCase):
         links = ["higherlevels.com/cold-call-mastery?via=connor-techsales", "skool.com/x/about?ref=abc",
                  "partner.com/go/connor", "connorsales.com", "connorsales.com/book?utm_source=yt"]
         self.assertEqual(daily._website(links), ["https://connorsales.com", "https://connorsales.com/book?utm_source=yt"])
+
+
+class TestBroadLane(unittest.TestCase):
+    def test_lookalikes_to_rows_with_email_only(self):
+        from leadpipe.sourcing import instagram_broad
+
+        def post(i):
+            return {"type": "Video", "url": f"https://ig/p/{i}", "videoViewCount": 100 * i, "timestamp": "2026-11-02T10:00:00Z",
+                    "caption": "how I sign clients", "likesCount": 10, "commentsCount": 1}
+
+        def prof(u, bio, email=None):
+            return {"username": u, "fullName": u.title(), "biography": bio, "followersCount": 4000, "postsCount": 80,
+                    "externalUrl": "https://example-coach.com", "businessEmail": email, "latestPosts": [post(i) for i in range(1, 7)]}
+
+        class A:
+            calls = []
+            def run_actor(self, actor, inp, max_items, price_per_item, label):
+                self.calls.append(label)
+                if label == "broad-seeds":
+                    return [{"username": "seed1", "relatedProfiles": [
+                        {"username": "salescoachsue", "full_name": "Sue | Sales Coach"},
+                        {"username": "known_one", "full_name": "Known | Business Coach"},
+                        {"username": "fitnesskim", "full_name": "Kim fitness"}]}]
+                if label == "broad-profiles":
+                    return [prof("salescoachsue", "Sales coach for coaches. Book a call", "sue@suesales.com")]
+                return []
+
+        class N:
+            created = []
+            def schema(self, ds): return {"Name": "title", "IG": "url", "Email": "email", "Lane": "select", "Status": "select",
+                                          "Asset": "url", "Next touch": "rich_text", "Notes": "rich_text"}
+            def all_rows(self, ds):
+                return [{"properties": {"IG": {"type": "url", "url": "https://www.instagram.com/seed1/"},
+                                        "Status": {"type": "select", "select": {"name": "Replied"}}}},
+                        {"properties": {"IG": {"type": "url", "url": "https://www.instagram.com/known_one/"}}}]
+            def create_row(self, ds, props): self.created.append(props)
+
+        with tempfile.TemporaryDirectory() as d:
+            cfg = load_config(data_dir=Path(d))
+            cfg.settings["contacts"]["fetch_websites"] = False
+            judge = lambda cards, *a: {c["username"]: {"qualified": True, "tier": "B", "reasons": ["ok"],
+                                                         "mockup_angle": "hook", "confidence": "medium"} for c in cards}
+            n = N()
+            st = instagram_broad.run(cfg, BudgetGuard(Path(d) / "l", cfg.settings["budget"], approved=True), dry_run=False,
+                                     notion=n, apify=A(), judge=judge, lookup_mx=lambda dom: ["aspmx.l.google.com"],
+                                     today=date(2026, 11, 4))
+        self.assertEqual((st["lookalikes"], st["after_name_screen"], st["icp_pass"], st["written"]), (3, 1, 1, 1))
+        self.assertEqual(n.created[0]["Email"], {"email": "sue@suesales.com"})
+        self.assertEqual(n.created[0]["Lane"], {"select": {"name": "Mockup"}})
