@@ -3,10 +3,10 @@
 Broader than the main ICP on purpose (Sam, 4 Nov): outbound needs volume and mockups are
 automated, so a decent fit with a usable email beats a perfect fit without one.
 
-  1. Seeds: Instagram handles already in Notion Prospects (rotated, never the same seed twice
-     in 30 days). Their "related profiles" are lookalikes (about 20% qualified on 30 Oct).
-  2. Free name screen (lookalike regexes in hard_filters.toml), skip anyone already in Notion.
-  3. Apify profile scrape, then the free prefilter (talking-head video, active, English, offer).
+  1. Instagram keyword search ([broad] keywords, rotated with a cooldown). Lookalikes
+     ("related profiles") stopped working on 31 Oct, so search is the source.
+  2. Free screen (exclude regex in hard_filters.toml), skip anyone already in Notion.
+  3. The free prefilter (talking-head video, active, English, offer).
   4. Claude Haiku with the BROAD criteria below (tier A or B passes).
   5. Email: Instagram bio/business email, their website, then the Apify contact Actor.
      MX check drops dead domains. Rows WITHOUT an email are not written.
@@ -16,7 +16,6 @@ Never emails or DMs anyone.
 from __future__ import annotations
 
 import json
-import random
 import re
 from datetime import date
 
@@ -24,7 +23,7 @@ from .. import contacts, enrichment, prefilter
 from ..apify import ApifyClient
 from ..budget import BudgetGuard, Estimate, SpendNotApproved
 from ..qualify import _usage_cost, estimate_cost, profile_card
-from .notion import Notion, NotionError, build_properties, existing_keys, name_key, plain
+from .notion import Notion, NotionError, build_properties, existing_keys, name_key
 
 BROAD_ICP = """BROAD ICP (volume lane, mockup only). Pass when ALL of these hold:
 - A coach, consultant, strategist or expert who sells their own knowledge (coaching, programs,
@@ -68,24 +67,6 @@ class SeedLog:
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(json.dumps(self.d, indent=1), encoding="utf-8")
-
-
-IG_HANDLE = re.compile(r"instagram\.com/([A-Za-z0-9_.]{2,30})")
-
-
-def _seeds(rows: list[dict], s: dict, log: SeedLog, today: date, n: int) -> list[str]:
-    """Prospects that replied or got sent first (best signal), then the rest."""
-    def rank(row):
-        st = plain(row["properties"].get(s["col_status"], {}))
-        return {"Client": 0, "Call booked": 0, "Replied": 1, "Sent": 2, "Queued": 3}.get(st, 4)
-    out = []
-    for row in sorted(rows, key=lambda r: (rank(r), random.random())):
-        m = IG_HANDLE.search(plain(row["properties"].get(s["col_instagram"], {})))
-        if m and log.fresh(m.group(1).lower(), today):
-            out.append(m.group(1).lower())
-        if len(out) >= n:
-            break
-    return out
 
 
 def _judge(cards: list[dict], strict_icp: str, s: dict, guard: BudgetGuard) -> dict[str, dict]:
@@ -145,39 +126,34 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
     apify = apify or ApifyClient(cfg.secret("APIFY_TOKEN"), guard, cfg.paths.raw, cfg.settings["apify"]["run_timeout_seconds"])
     a = cfg.settings["apify"]
 
-    # 1. seeds -> related profiles
-    seeds = _seeds(rows, s, log, today, b["seeds_per_run"])
-    stats["seeds"] = len(seeds)
-    if not seeds:
-        print("[broad] no fresh seeds (every Notion IG handle was used in the last 30 days)")
+    # 1. keyword search (Instagram stopped returning "related profiles" on 31 Oct, so no lookalikes).
+    #    The search Actor returns full profiles, so there's no second scrape.
+    kws = [k for k in b["keywords"] if log.fresh("kw:" + k, today, b["keyword_cooldown_days"])][: b["keywords_per_run"]]
+    stats["seeds"] = len(kws)
+    if not kws:
+        print("[broad] every keyword was used recently; add more to [broad] keywords or lower keyword_cooldown_days")
         return stats
-    seed_items = apify.run_actor(a["profile_actor"], {"usernames": seeds}, len(seeds), a["profile_price_per_result"], "broad-seeds")
-    names = {}
-    for it in seed_items:
-        for r in it.get("relatedProfiles") or []:
-            if r.get("username") and not r.get("is_private"):
-                names.setdefault(r["username"].lower(), r.get("full_name") or "")
-    stats["lookalikes"] = len(names)
-
-    # 2. free screen
-    good = re.compile(cfg.hard_filters.get("lookalike_name_include", "."), re.I)
+    n = len(kws) * b["per_keyword"]
+    items = apify.run_actor(a["discovery_actor"], {"search": ", ".join(kws), "searchType": "user",
+                                                   "searchLimit": b["per_keyword"]},
+                            n, a["discovery_price_per_result"], "broad-search")
     bad = re.compile(cfg.hard_filters.get("lookalike_name_exclude", "$^"), re.I)
-    cands = [u for u, n in names.items()
-             if f"ig:{u}" not in known and good.search(u + " " + n) and not bad.search(u + " " + n)
-             and not (name_key(n) and name_key(n) in known)]
-    cands = cands[: b["max_profiles_per_run"]]
-    stats["after_name_screen"] = len(cands)
-    print(f"[broad] {len(seeds)} seeds -> {len(names)} lookalikes -> {len(cands)} after free screen")
-    if not cands:
-        for sd in seeds:
-            log.mark(sd, today)
-        if not dry_run:
-            log.save()
-        return stats
+    seen, fresh = set(), []
+    for it in items:
+        u = str(it.get("username", "")).lower()
+        n_ = it.get("fullName") or ""
+        if not u or u in seen or f"ig:{u}" in known or (name_key(n_) and name_key(n_) in known):
+            continue
+        seen.add(u)
+        if bad.search(u + " " + n_ + " " + (it.get("biography") or "")):
+            continue
+        fresh.append(it)
+    stats["lookalikes"] = len(items)
+    stats["after_name_screen"] = stats["scraped"] = len(fresh)
+    print(f"[broad] {len(kws)} keywords -> {len(items)} profiles -> {len(fresh)} new after free screen")
+    items = fresh
+    seeds = ["kw:" + k for k in kws]
 
-    # 3. scrape + prefilter (looser follower cap than the strict lane)
-    items = apify.run_actor(a["profile_actor"], {"usernames": cands}, len(cands), a["profile_price_per_result"], "broad-profiles")
-    stats["scraped"] = len(items)
     rules = dict(cfg.hard_filters, max_followers=b["max_followers"], require_external_link=False)
     leads = []
     for it in items:

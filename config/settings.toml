@@ -108,6 +108,20 @@ status_new = "Queued"
 # Tier B volume lane: `python run.py broad`. ~20 mockups/day is Sam's automated capacity and
 # about what one Gmail can send safely, so the target is a little above it for bounces.
 daily_target = 25          # Notion rows with an email per run (stops there)
-seeds_per_run = 12         # Notion IG handles whose "related profiles" are scraped (rotated, 30-day cooldown)
-max_profiles_per_run = 120 # lookalikes scraped after the free name screen (~$0.0026 each)
+# Instagram keyword search ($0.0027 per profile, full profile data). ~13% qualify, ~2/3 of those
+# get an email, so ~280 profiles/day for ~25 rows: 10 keywords x 30.
+keywords_per_run = 10
+per_keyword = 30
+keyword_cooldown_days = 7  # a keyword is reused after a week (search results change slowly)
+keywords = [
+  "business coach", "online business coach", "business mentor", "business coach for coaches", "sales coach",
+  "marketing coach", "high ticket coach", "consultant", "leadership coach", "executive coach",
+  "female entrepreneur coach", "content strategist", "personal brand coach", "client attraction coach",
+  "coaching business", "scale your business", "course creator", "membership coach", "launch strategist",
+  "funnel strategist", "email marketing coach", "linkedin coach", "instagram growth coach",
+  "sales trainer", "closing coach", "offer coach", "productivity coach for entrepreneurs",
+  "career coach", "money coach for entrepreneurs", "service provider coach", "agency owner coach",
+  "b2b sales coach", "business strategist", "brand strategist", "podcast host business",
+  "speaker coach", "copywriting coach", "systems coach", "operations coach", "growth coach",
+]
 max_followers = 150000     # looser than the strict lane; size is not a money signal (Sam 30 Oct)

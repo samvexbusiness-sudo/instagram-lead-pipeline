@@ -295,13 +295,9 @@ class TestBroadLane(unittest.TestCase):
             calls = []
             def run_actor(self, actor, inp, max_items, price_per_item, label):
                 self.calls.append(label)
-                if label == "broad-seeds":
-                    return [{"username": "seed1", "relatedProfiles": [
-                        {"username": "salescoachsue", "full_name": "Sue | Sales Coach"},
-                        {"username": "known_one", "full_name": "Known | Business Coach"},
-                        {"username": "fitnesskim", "full_name": "Kim fitness"}]}]
-                if label == "broad-profiles":
-                    return [prof("salescoachsue", "Sales coach for coaches. Book a call", "sue@suesales.com")]
+                if label == "broad-search":
+                    return [prof("salescoachsue", "Sales coach for coaches. Book a call", "sue@suesales.com"),
+                            prof("known_one", "Business coach"), prof("fitnesskim", "fitness coach for moms")]
                 return []
 
         class N:

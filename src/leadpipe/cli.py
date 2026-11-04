@@ -243,8 +243,8 @@ def cmd_broad(args):
     cfg, _store, guard = _ctx(args)
     st = instagram_broad.run(cfg, guard, dry_run=not args.write, target=args.target or None)
     print(f"\n=== Broad (Tier B) {'DRY RUN, nothing written' if not args.write else 'run'} {st['date']} ===")
-    print(f"Seeds {st['seeds']} -> lookalikes {st['lookalikes']} -> free screen {st['after_name_screen']} "
-          f"-> scraped {st['scraped']} -> prefilter {st['prefilter_pass']} -> ICP pass {st['icp_pass']} "
+    print(f"Keywords {st['seeds']} -> profiles {st['lookalikes']} -> new after free screen {st['after_name_screen']} "
+          f"-> prefilter {st['prefilter_pass']} -> ICP pass {st['icp_pass']} "
           f"-> with email {st['with_email']} | written {st['written']}")
     for r in st["rows"][: 5 if not args.write else 0]:
         print("\n" + "\n".join(f"  {k}: {v}" for k, v in r.items() if v))
@@ -307,7 +307,7 @@ def main(argv=None):
     sp.add_argument("--limit", type=int, default=0)
     sp.add_argument("--approve-spend", action="store_true")
 
-    sp = add("broad", cmd_broad, "Tier B volume lane: Instagram lookalikes with an email into Notion (preview by default)")
+    sp = add("broad", cmd_broad, "Tier B volume lane: Instagram keyword search, leads with an email into Notion (preview by default)")
     sp.add_argument("--write", action="store_true")
     sp.add_argument("--target", type=int, default=0, help="rows to write this run (default [broad] daily_target)")
     sp.add_argument("--approve-spend", action="store_true")
