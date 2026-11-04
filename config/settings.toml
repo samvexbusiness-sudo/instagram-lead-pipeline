@@ -113,15 +113,34 @@ daily_target = 25          # Notion rows with an email per run (stops there)
 keywords_per_run = 10
 per_keyword = 30
 keyword_cooldown_days = 7  # a keyword is reused after a week (search results change slowly)
+# From ICP_CRITERIA.md + the business skill (1 Nov): business coaches who sell to founders,
+# owners and professionals, tactical (sales, marketing, content, client acquisition, leadership).
+# Older solo coaches with their own website publish emails most; the "high ticket" cluster
+# passes the ICP but rarely publishes one, so those terms are left out.
 keywords = [
-  "business coach", "online business coach", "business mentor", "business coach for coaches", "sales coach",
-  "marketing coach", "high ticket coach", "consultant", "leadership coach", "executive coach",
-  "female entrepreneur coach", "content strategist", "personal brand coach", "client attraction coach",
-  "coaching business", "scale your business", "course creator", "membership coach", "launch strategist",
-  "funnel strategist", "email marketing coach", "linkedin coach", "instagram growth coach",
-  "sales trainer", "closing coach", "offer coach", "productivity coach for entrepreneurs",
-  "career coach", "money coach for entrepreneurs", "service provider coach", "agency owner coach",
-  "b2b sales coach", "business strategist", "brand strategist", "podcast host business",
-  "speaker coach", "copywriting coach", "systems coach", "operations coach", "growth coach",
+  # core
+  "business coach", "online business coach", "business mentor", "small business coach", "business strategist",
+  "business coach for coaches", "business coach for women", "business coach for consultants",
+  "business coach for service providers", "business coach for entrepreneurs", "business consultant",
+  # sales and client acquisition
+  "sales coach", "sales coach for coaches", "b2b sales coach", "sales trainer", "client attraction coach",
+  "client acquisition coach", "discovery call coach", "get more clients coach", "lead generation coach",
+  # marketing and content
+  "marketing coach", "marketing coach for coaches", "marketing strategist", "content strategist",
+  "content coach", "content marketing coach", "personal brand coach", "personal branding strategist",
+  "linkedin coach", "linkedin strategist", "instagram coach for business", "email marketing coach",
+  "funnel strategist", "launch strategist", "course creator coach", "podcast coach", "visibility coach",
+  "storytelling coach for business", "copywriting coach", "brand strategist",
+  # offers, pricing, scaling
+  "pricing coach", "offer coach", "group coaching program", "membership coach", "scale your coaching business",
+  "coaching business mentor", "consulting business coach", "freelance business coach",
+  # leadership and ops (fine per ICP)
+  "leadership coach", "executive coach", "leadership coach for founders", "ceo coach",
+  "operations coach", "systems coach for entrepreneurs", "productivity coach for entrepreneurs",
+  "growth coach", "speaker coach", "public speaking coach for entrepreneurs",
+  # owner-run niches that sell to owners/professionals
+  "coach for therapists in private practice", "coach for financial advisors", "coach for realtors",
+  "coach for agency owners", "coach for photographers business", "coach for wedding planners business",
+  "coach for interior designers business", "coach for virtual assistants", "coach for online fitness coaches business",
 ]
 max_followers = 150000     # looser than the strict lane; size is not a money signal (Sam 30 Oct)
