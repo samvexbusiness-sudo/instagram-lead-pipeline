@@ -69,6 +69,36 @@ class SeedLog:
         self.path.write_text(json.dumps(self.d, indent=1), encoding="utf-8")
 
 
+class KeywordYield:
+    """Per-keyword totals across runs: profiles found and rows with an email. Keywords that
+    produce emails get picked first; untested ones get a fair chance; a keyword with 0 emails
+    after 60+ profiles is skipped."""
+
+    def __init__(self, path):
+        self.path = path
+        self.d = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+    def add(self, kw, profiles: int = 0, emails: int = 0) -> None:
+        if not kw:
+            return
+        e = self.d.setdefault(kw, {"profiles": 0, "emails": 0})
+        e["profiles"] += profiles
+        e["emails"] += emails
+
+    def score(self, kw: str) -> float:
+        e = self.d.get(kw, {"profiles": 0, "emails": 0})
+        return (e["emails"] + 1) / (e["profiles"] + 25)   # untested keywords score 0.04, like a decent one
+
+    def pick(self, candidates: list[str], n: int) -> list[str]:
+        alive = [k for k in candidates if not (self.d.get(k, {}).get("profiles", 0) >= 60
+                                               and self.d.get(k, {}).get("emails", 0) == 0)]
+        return sorted(alive, key=self.score, reverse=True)[:n]
+
+    def save(self) -> None:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(self.d, indent=1), encoding="utf-8")
+
+
 def _judge(cards: list[dict], strict_icp: str, s: dict, guard: BudgetGuard) -> dict[str, dict]:
     import anthropic
 
@@ -145,7 +175,9 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
 
     # 1. keyword search (Instagram stopped returning "related profiles" on 31 Oct, so no lookalikes).
     #    The search Actor returns full profiles, so there's no second scrape.
-    kws = [k for k in b["keywords"] if log.fresh("kw:" + k, today, b["keyword_cooldown_days"])][: b["keywords_per_run"]]
+    ylog = KeywordYield(cfg.paths.data / "sourcing" / "keyword_yield.json")
+    kws = ylog.pick([k for k in b["keywords"] if log.fresh("kw:" + k, today, b["keyword_cooldown_days"])],
+                    b["keywords_per_run"])
     stats["seeds"] = len(kws)
     if not kws:
         print("[broad] every keyword was used recently; add more to [broad] keywords or lower keyword_cooldown_days")
@@ -171,6 +203,25 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
     items = fresh
     seeds = ["kw:" + k for k in kws]
 
+    for it in items:
+        ylog.add(it.get("searchTerm"), profiles=1)
+    process(cfg, guard, items, stats, known=known, schema=schema, notion=notion, apify=apify, judge=judge,
+            lookup_mx=lookup_mx, today=today, dry_run=dry_run, target=target, tag="IG-BROAD", ylog=ylog)
+    if not dry_run:
+        ylog.save()
+    for sd in seeds:
+        log.mark(sd, today)
+    if not dry_run:
+        log.save()
+    return stats
+
+
+def process(cfg, guard: BudgetGuard, items: list[dict], stats: dict, *, known: set, schema: dict, notion: Notion,
+            apify, judge, lookup_mx, today: date, dry_run: bool, target: int, tag: str,
+            ylog: "KeywordYield | None" = None, extra_emails: dict | None = None) -> None:
+    """Shared back half: prefilter -> broad ICP -> email -> Notion rows. `extra_emails` maps a
+    handle to an email already seen publicly (e.g. in a Google result showing their bio)."""
+    s, b, a = cfg.settings["sourcing"], cfg.settings["broad"], cfg.settings["apify"]
     rules = dict(cfg.hard_filters, max_followers=b["max_followers"], require_external_link=False)
     leads = []
     for it in items:
@@ -196,6 +247,8 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
 
     # 5. email: IG bio/business email, website, then the contact Actor for the rest
     for l in leads:
+        if extra_emails and extra_emails.get(l["username"]):
+            contacts._add(l, extra_emails[l["username"]], "instagram", "Google result showing their bio", None)
         contacts.from_instagram(l)
         if not l["contacts"]["emails"] and cfg.settings["contacts"].get("fetch_websites", True):
             contacts.from_websites(l, cfg.settings["contacts"]["max_pages_per_lead"],
@@ -209,6 +262,9 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
     leads = [l for l in leads if l["contacts"]["best_email"] and f"email:{l['contacts']['best_email']}" not in known
              and _email_is_theirs(l)]
     stats["with_email"] = len(leads)
+    if ylog:
+        for l in leads:
+            ylog.add(l["profile"].get("search_term"), emails=1)
 
     # 6. Notion rows, tier A first, capped at the target
     leads.sort(key=lambda l: (l["icp"]["tier"], -(l["profile"].get("followers") or 0)))
@@ -224,7 +280,7 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
             s["col_asset"]: _best_reel(p),
             s["col_next"]: "Before/after mockup, Sam reviews first",
             s["col_notes"]: " · ".join([
-                f"IG-BROAD {today.isoformat()} (volume lane, mockup only)", f"tier {v['tier']} ({v['confidence']})",
+                f"{tag} {today.isoformat()} (volume lane, mockup only)", f"tier {v['tier']} ({v['confidence']})",
                 f"{p.get('followers') or '?'} followers", "; ".join(v.get("reasons", [])[:2]),
                 f"Mockup angle: {v.get('mockup_angle')}", f"Email from {src} ({c.get('best_provider') or '?'})"]),
         }
@@ -235,8 +291,3 @@ def run(cfg, guard: BudgetGuard, *, dry_run: bool, target: int | None = None, no
                 stats["written"] += 1
             except NotionError as e:
                 print(f"[notion] skipped {values[s['col_name']]}: {e}")
-    for sd in seeds:
-        log.mark(sd, today)
-    if not dry_run:
-        log.save()
-    return stats

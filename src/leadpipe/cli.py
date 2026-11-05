@@ -250,6 +250,19 @@ def cmd_broad(args):
         print("\n" + "\n".join(f"  {k}: {v}" for k, v in r.items() if v))
 
 
+def cmd_import_google(args):
+    from .sourcing import google_import
+
+    cfg, _store, guard = _ctx(args)
+    raw = Path(args.file).read_text(encoding="utf-8", errors="ignore")
+    st = google_import.run(cfg, guard, raw, dry_run=not args.write, check_profiles=args.check_profiles, limit=args.limit)
+    print(f"\n=== Google import {'DRY RUN, nothing written' if not args.write else 'run'} {st['date']} ===")
+    print(f"In file {st['found']} -> new {st['new']} -> ICP pass {st['icp_pass']} -> with email {st['with_email']} "
+          f"| written {st['written']}")
+    for r in st["rows"][: 5 if not args.write else 0]:
+        print("\n" + "\n".join(f"  {k}: {v}" for k, v in r.items() if v))
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="run.py", description="Instagram business-coach lead pipeline")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -310,6 +323,13 @@ def main(argv=None):
     sp = add("broad", cmd_broad, "Tier B volume lane: Instagram keyword search, leads with an email into Notion (preview by default)")
     sp.add_argument("--write", action="store_true")
     sp.add_argument("--target", type=int, default=0, help="rows to write this run (default [broad] daily_target)")
+    sp.add_argument("--approve-spend", action="store_true")
+
+    sp = add("import-google", cmd_import_google, "turn a saved Google results page into Notion mockup leads (preview by default)")
+    sp.add_argument("file", help=".txt (copied page), .html (saved page) or .json export")
+    sp.add_argument("--write", action="store_true")
+    sp.add_argument("--check-profiles", action="store_true", help="scrape each profile on Apify first (~$0.003 each)")
+    sp.add_argument("--limit", type=int, default=0)
     sp.add_argument("--approve-spend", action="store_true")
 
     args = p.parse_args(argv)

@@ -333,3 +333,27 @@ class TestEmailIsTheirs(unittest.TestCase):
         self.assertTrue(_email_is_theirs(mk("shan.coach@gmail.com", "website", "Shan Smith", "bossdivas")))
         self.assertTrue(_email_is_theirs(mk("help@marcaccetta.com", "website", "Marc", "marc")))
         self.assertTrue(_email_is_theirs(mk("naijasales@gmail.com", "apify_contact", "Habeebah", "naija")))
+
+
+class TestGoogleImport(unittest.TestCase):
+    PAGE = """Instagram · elevatecoach 890+ followers
+Elevate! Sales Coach (@elevatecoach) - Instagram
+Sales coach for women in business. Book a call. roseterrykell@gmail.com. Read more
+https://www.instagram.com/explore/
+Instagram · kevinbamsmith
+KB.Smith|Business Strategist (@kevinbamsmith) · I help founders scale. Email: kevinbamsmithllc@gmail.com... more
+Some other result with stray@nowhere.com and no handle before it far away""" + " x" * 400
+
+    def test_parse_copied_page(self):
+        from leadpipe.sourcing.google_import import parse
+        got = parse(self.PAGE)
+        self.assertEqual(got["elevatecoach"]["email"], "roseterrykell@gmail.com")
+        self.assertEqual(got["kevinbamsmith"]["email"], "kevinbamsmithllc@gmail.com")
+        self.assertNotIn("explore", got)
+
+    def test_parse_json_export(self):
+        from leadpipe.sourcing.google_import import parse
+        js = json.dumps([{"organicResults": [{"url": "https://www.instagram.com/thecoachems/",
+                                              "title": "Career Coach (@thecoachems)",
+                                              "description": "Personal brand coach. hellocoachems@gmail.com"}]}])
+        self.assertEqual(parse(js)["thecoachems"]["email"], "hellocoachems@gmail.com")
