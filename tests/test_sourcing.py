@@ -357,3 +357,13 @@ Some other result with stray@nowhere.com and no handle before it far away""" + "
                                               "title": "Career Coach (@thecoachems)",
                                               "description": "Personal brand coach. hellocoachems@gmail.com"}]}])
         self.assertEqual(parse(js)["thecoachems"]["email"], "hellocoachems@gmail.com")
+
+
+class TestGoogleImportPipeFormat(unittest.TestCase):
+    def test_email_pipe_handle_lines(self):
+        from leadpipe.sourcing.google_import import parse
+        got = parse("dave@davemoreno.ca | @davemorenocoaching\nwangarimethu@gmail.com.read | @fenix_business_hub\n"
+                    "sales.slovakfinance@gmail.com | \n")
+        self.assertEqual(got["davemorenocoaching"]["email"], "dave@davemoreno.ca")
+        self.assertEqual(got["fenix_business_hub"]["email"], "wangarimethu@gmail.com")
+        self.assertEqual(len(got), 2)

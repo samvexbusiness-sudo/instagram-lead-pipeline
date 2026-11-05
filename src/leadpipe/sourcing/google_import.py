@@ -69,6 +69,16 @@ def parse(raw: str) -> dict[str, dict]:
     except (json.JSONDecodeError, ValueError):
         pass
     text = unescape(re.sub(r"<[^>]+>", " ", raw)) if "<html" in raw[:2000].lower() else raw
+    # Sam's export format: one "email | @handle" per line (handle after the email).
+    for line in text.splitlines():
+        m = re.match(r"\s*(\S+@\S+)\s*\|\s*@([A-Za-z0-9_.]{2,30})\s*$", line)
+        if m:
+            e = contacts.clean_emails(TAIL_RE.sub(r"\1 ", m.group(1)) + " ")
+            h = m.group(2).lower().rstrip(".")
+            if e and h not in out and h not in NOT_HANDLES:
+                out[h] = {"email": e[0], "snippet": line.strip()}
+    if out:
+        return out
     _parse_block(text, out, max_gap=350)
     return out
 
