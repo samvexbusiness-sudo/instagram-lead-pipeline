@@ -94,11 +94,17 @@ def run(cfg, guard: BudgetGuard, raw: str, *, dry_run: bool, check_profiles: boo
     notion = notion or Notion(cfg.secret("NOTION_TOKEN"))
     schema = notion.schema(s["notion_prospects_ds"])
     known = existing_keys(notion.all_rows(s["notion_prospects_ds"]))
-    found = {h: v for h, v in found.items() if f"ig:{h}" not in known and f"email:{v['email']}" not in known}
+    done_path = cfg.paths.data / "sourcing" / "google_import_done.json"
+    done = json.loads(done_path.read_text(encoding="utf-8")) if done_path.exists() else {}
+    before = len(found)
+    found = {h: v for h, v in found.items() if f"ig:{h}" not in known and f"email:{v['email']}" not in known
+             and h not in done}
+    stats["already_checked"] = before - len(found)
     if limit:
         found = dict(list(found.items())[:limit])
     stats["new"] = len(found)
-    print(f"[google] {stats['found']} profiles with an email in the file, {stats['new']} not in Notion yet")
+    print(f"[google] {stats['found']} profiles with an email in the file, {stats['already_checked']} already checked "
+          f"before or in Notion, {stats['new']} new")
     if not found:
         return stats
 
@@ -112,6 +118,7 @@ def run(cfg, guard: BudgetGuard, raw: str, *, dry_run: bool, check_profiles: boo
         broad.process(cfg, guard, items, stats, known=known, schema=schema, notion=notion, apify=apify,
                       judge=judge, lookup_mx=lookup_mx, today=today, dry_run=dry_run,
                       target=len(found), tag="IG-GOOGLE", extra_emails={h: v["email"] for h, v in found.items()})
+        _remember(done, done_path, found, today, dry_run)
         return stats
 
     # Free path: judge from the Google snippet alone (no activity or reel check).
@@ -156,4 +163,16 @@ def run(cfg, guard: BudgetGuard, raw: str, *, dry_run: bool, check_profiles: boo
                 stats["written"] += 1
             except NotionError as e:
                 print(f"[notion] skipped {l['username']}: {e}")
+    _remember(done, done_path, found, today, dry_run)
     return stats
+
+
+def _remember(done: dict, path, found: dict, today: date, dry_run: bool) -> None:
+    """Handles already checked (passed or not) are skipped next time, so pasting the bookmarklet's
+    ever-growing list never pays twice for the same person. Dry runs don't count."""
+    if dry_run:
+        return
+    for h in found:
+        done[h] = today.isoformat()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(done, indent=1), encoding="utf-8")
